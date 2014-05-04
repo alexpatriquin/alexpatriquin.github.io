@@ -9,7 +9,7 @@
   <meta name="author" content="Alex Patriquin">
 
   
-  <meta name="description" content="Blog Archives Recent Posts GitHub Repos Status updating&#8230; @alexpatriquin on GitHub $.domReady(function(){ if (!window.jXHR){ var jxhr = &hellip;">
+  <meta name="description" content="This post walks through the steps I took to set up text-to-speech in a Rails 4 app. To learn about other options for implementing text-to-speech in &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -69,9 +69,9 @@
            </span>
        
     </a></li>
-  <li><a href="/">Blog</a></li>
+  <!-- <li><a href="/">Blog</a></li>
   <li><a href="/blog/archives">Archives</a></li>
-  <li><a href="/about">About me</a></li>
+  <li><a href="/about">About me</a></li> -->
 </ul>
 
 </nav>
@@ -79,6 +79,119 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="twilio-text-to-speech-in-rails-4">Twilio Text-To-Speech in Rails 4</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-05-04T15:06:41-04:00" pubdate data-updated="true">May 4<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>This post walks through the steps I took to set up text-to-speech in a Rails 4 app. To learn about other options for implementing text-to-speech in web apps generally, see <a href="/text-to-speech-options-for-web-apps">Text-To-Speech Options for Web Apps</a>.</p>
+
+<p>Also, the Twilio blog has tutorial worth reading, <a href="https://www.twilio.com/blog/2014/02/twilio-on-rails-integrating-twilio-with-your-rails-4-app.html">Integrating Twilio With Your Rails 4 App</a>, but it does not cover setting up the crucial <a href="https://www.twilio.com/docs/client/device">Twilio.Device</a> or TTS in Rails 4.</p>
+
+<p>Before we get started, note that Twilio.Device only works when connected to the internet. So you can’t test Twilio.Device from localhost. Instead, you’ll need to expose your localhost to the internet with a utility called ngrok, which creates a “tunnel” that lets you visit your localhost on the web. (See <a href="#ngrok">below</a>.)</p>
+
+<p>In order to set up Twilio.Device in a Rails 4 app, we need to complete 10 steps at Twilio.com and within our code.</p>
+
+<ol>
+<li>Sign up for Twilio</li>
+<li>Install the twilio-ruby gem</li>
+<li>Add endpoint for Twilio</li>
+<li>Disable DSRF Detection on Twilio endpoint</li>
+<li>Create a TwiML App</li>
+<li>Setup Capability Tokens</li>
+<li>Put Capability Token and text in a form</li>
+<li>Add Twilio.Device javascript</li>
+<li>Setup ngrok to test</li>
+<li>Deploy</li>
+</ol>
+
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="twilio-text-to-speech-in-rails-4">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="text-to-speech-options-for-web-apps">Text-To-Speech Options for Web Apps</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-05-04T13:07:46-04:00" pubdate data-updated="true">May 4<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>While I was building <a href="http://www.poemtoday.com/">PoemToday</a>, I wanted to add a feature that enabled users to play any poem aloud in a robot voice. If the inspiration for PoemToday, <a href="http://writersalmanac.publicradio.org/">The Writer&rsquo;s Almanac</a>, had Garrison Keillor’s voice coming over the NPR radio waves every morning, then my app would have the voice not of a killer robot, but a Keillorbot.</p>
+
+<p>This proved to be easier said than done. First, there was a dearth of good quality options for text-to-speech that fit right into Rails. Second, with the Twilio implementation I chose to make, there were a few configuration steps between Twilio and Rails that were neither obvious nor well documented.</p>
+
+<h2>Current TTS Options for Apps</h2>
+
+<p>Currently there’s a dearth of good quality text-to-speech options for web apps. I can’t really speak to mobile and desktop apps, but I believe those those platforms offer native TTS capabilities which developers can hook into.</p>
+
+<p>Some web app options, like AT&amp;T, were paid services that seemed to actually require more of an integration hurdle and impose all kinds of usage restrictions. Others like the <a href="https://github.com/c2h2/tts">tts</a> gem relied on a Google Translate hack which limited the spoken text to only 100 characters, about a sentence. A haiku might fit under that limit, but not a medium-length or longer poem. I also reached out to <a href="https://wit.ai/">Wit.ai</a>, but they said they don’t offer TTS yet.</p>
+
+<p>The better options were <a href="https://www.twilio.com/docs/howto/twilio-client-text-to-speech">Twilio</a> and <a href="http://tts-api.com/">tts-api.com</a>. Twilio makes text-to-speech available through Twilio.Device, an API object that effectively turns your users’ browser into a phone or “soft device”. Meanwhile tts-api.com is just a one-page website with a single textarea on a form that returns an mp3 audio file when submitted. Nice and simple!</p>
+
+<p>Even though it was probably the best option in terms of performance, I didn’t want to download and store 6,000 mp3 files from tts-api.com, one for each poem, and rack up hosting fees. I could’ve also had the mp3 file from tts-api.com pop up in a new window, but I dislike pop ups (they’re terrible user experience) so I went with Twilio.</p>
+
+<p>Also, while researching this post, I found the <a href="https://github.com/dejan/espeak-ruby">espeak-ruby</a> gem, which I’ll haven’t tried out&hellip; I’ll have to come back soon and post an update. In the meantime, I’m glad I got a chance to figure out the Twilio implementation as I learned a lot.</p>
+
+<p>See the steps I took to implement <a href="/twilio-text-to-speech-in-rails-4">Twilio text-to-speech in Rails 4</a>.</p>
+</div>
+  
+  
+
+
+    </article>
   
   <div class="pagination">
     
@@ -91,6 +204,14 @@
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="twilio-text-to-speech-in-rails-4">Twilio Text-To-Speech in Rails 4</a>
+      </li>
+    
+      <li class="post">
+        <a href="text-to-speech-options-for-web-apps">Text-To-Speech Options for Web Apps</a>
+      </li>
     
   </ul>
 </section>
@@ -143,28 +264,9 @@
 
 
 
-<div id="fb-root"></div>
-<script>(function(d, s, id) {
-  var js, fjs = d.getElementsByTagName(s)[0];
-  if (d.getElementById(id)) {return;}
-  js = d.createElement(s); js.id = id;
-  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
-  fjs.parentNode.insertBefore(js, fjs);
-}(document, 'script', 'facebook-jssdk'));</script>
 
 
 
-
-
-  <script type="text/javascript">
-    (function(){
-      var twitterWidgets = document.createElement('script');
-      twitterWidgets.type = 'text/javascript';
-      twitterWidgets.async = true;
-      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
-      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
-    })();
-  </script>
 
 
 

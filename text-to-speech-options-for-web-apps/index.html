@@ -5,13 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Blog Archive - SquareCraft</title>
+  <title>Text-To-Speech Options for Web Apps - SquareCraft</title>
   <meta name="author" content="Alex Patriquin">
 
   
-  <meta name="description" content="Blog Archive 2014 Twilio Text-To-Speech in Rails 4
-May 04 2014 Text-To-Speech Options for Web Apps
-May 04 2014 Recent Posts Twilio Text-To-Speech in &hellip;">
+  <meta name="description" content="While I was building PoemToday, I wanted to add a feature that enabled users to play any poem aloud in a robot voice. If the inspiration for &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -20,7 +18,7 @@ May 04 2014 Recent Posts Twilio Text-To-Speech in &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://alexpatriquin.github.io/blog/archives/">
+  <link rel="canonical" href="http://alexpatriquin.github.iotext-to-speech-options-for-web-apps">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -80,41 +78,92 @@ May 04 2014 Recent Posts Twilio Text-To-Speech in &hellip;">
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">Blog Archive</h1>
+    
+      <h1 class="entry-title">Text-To-Speech Options for Web Apps</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-05-04T13:07:46-04:00" pubdate data-updated="true">May 4<span>th</span>, 2014</time>
+        
+      </p>
     
   </header>
-  
-  <div id="blog-archives">
 
 
+<div class="entry-content"><p>While I was building <a href="http://www.poemtoday.com/">PoemToday</a>, I wanted to add a feature that enabled users to play any poem aloud in a robot voice. If the inspiration for PoemToday, <a href="http://writersalmanac.publicradio.org/">The Writer&rsquo;s Almanac</a>, had Garrison Keillor’s voice coming over the NPR radio waves every morning, then my app would have the voice not of a killer robot, but a Keillorbot.</p>
 
-  
-  <h2>2014</h2>
+<p>This proved to be easier said than done. First, there was a dearth of good quality options for text-to-speech that fit right into Rails. Second, with the Twilio implementation I chose to make, there were a few configuration steps between Twilio and Rails that were neither obvious nor well documented.</p>
 
-<article>
-  
-<h1><a href="twilio-text-to-speech-in-rails-4">Twilio Text-To-Speech in Rails 4</a></h1>
-<time datetime="2014-05-04T15:06:41-04:00" pubdate><span class='month'>May</span> <span class='day'>04</span> <span class='year'>2014</span></time>
+<h2>Current TTS Options for Apps</h2>
 
+<p>Currently there’s a dearth of good quality text-to-speech options for web apps. I can’t really speak to mobile and desktop apps, but I believe those those platforms offer native TTS capabilities which developers can hook into.</p>
 
-</article>
+<p>Some web app options, like AT&amp;T, were paid services that seemed to actually require more of an integration hurdle and impose all kinds of usage restrictions. Others like the <a href="https://github.com/c2h2/tts">tts</a> gem relied on a Google Translate hack which limited the spoken text to only 100 characters, about a sentence. A haiku might fit under that limit, but not a medium-length or longer poem. I also reached out to <a href="https://wit.ai/">Wit.ai</a>, but they said they don’t offer TTS yet.</p>
 
+<p>The better options were <a href="https://www.twilio.com/docs/howto/twilio-client-text-to-speech">Twilio</a> and <a href="http://tts-api.com/">tts-api.com</a>. Twilio makes text-to-speech available through Twilio.Device, an API object that effectively turns your users’ browser into a phone or “soft device”. Meanwhile tts-api.com is just a one-page website with a single textarea on a form that returns an mp3 audio file when submitted. Nice and simple!</p>
 
+<p>Even though it was probably the best option in terms of performance, I didn’t want to download and store 6,000 mp3 files from tts-api.com, one for each poem, and rack up hosting fees. I could’ve also had the mp3 file from tts-api.com pop up in a new window, but I dislike pop ups (they’re terrible user experience) so I went with Twilio.</p>
 
-<article>
-  
-<h1><a href="text-to-speech-options-for-web-apps">Text-To-Speech Options for Web Apps</a></h1>
-<time datetime="2014-05-04T13:07:46-04:00" pubdate><span class='month'>May</span> <span class='day'>04</span> <span class='year'>2014</span></time>
+<p>Also, while researching this post, I found the <a href="https://github.com/dejan/espeak-ruby">espeak-ruby</a> gem, which I’ll haven’t tried out&hellip; I’ll have to come back soon and post an update. In the meantime, I’m glad I got a chance to figure out the Twilio implementation as I learned a lot.</p>
 
-
-</article>
-
+<p>See the steps I took to implement <a href="/twilio-text-to-speech-in-rails-4">Twilio text-to-speech in Rails 4</a>.</p>
 </div>
 
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">Alex Patriquin</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-05-04T13:07:46-04:00" pubdate data-updated="true">May 4<span>th</span>, 2014</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+      
+        <a class="basic-alignment right" href="twilio-text-to-speech-in-rails-4" title="Next Post: Twilio Text-To-Speech in Rails 4">Twilio Text-To-Speech in Rails 4 &raquo;</a>
+      
+    </p>
+  </footer>
 </article>
 
 </div>
