@@ -11,8 +11,6 @@ While I was building [PoemToday](http://www.poemtoday.com/), I wanted to add a f
 
 This proved to be easier said than done. First, there was a dearth of good quality options for text-to-speech that fit right into Rails. Second, with the Twilio implementation I chose to make, there were a few configuration steps between Twilio and Rails that were neither obvious nor well documented.
 
-##Current TTS Options for Apps
-
 Currently there’s a dearth of good quality text-to-speech options for web apps. I can’t really speak to mobile and desktop apps, but I believe those those platforms offer native TTS capabilities which developers can hook into. 
 
 Some web app options, like AT&T, were paid services that seemed to actually require more of an integration hurdle and impose all kinds of usage restrictions. Others like the [tts](https://github.com/c2h2/tts) gem relied on a Google Translate hack which limited the spoken text to only 100 characters, about a sentence. A haiku might fit under that limit, but not a medium-length or longer poem. I also reached out to [Wit.ai](https://wit.ai/), but they said they don’t offer TTS yet. 
