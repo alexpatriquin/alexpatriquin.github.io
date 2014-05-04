@@ -1,0 +1,168 @@
+---
+layout: post
+title: "Twilio Text-To-Speech in Rails 4"
+permalink: "twilio-text-to-speech-in-rails-4"
+date: 2014-05-04 15:06:41 -0400
+comments: true
+categories: 
+---
+
+This post walks through the steps I took to set up text-to-speech in a Rails 4 app in hopes of helping other developers in similar circumstances.
+
+Implementing Twilio TTS in Rails 4
+
+The Twilio blog has tutorial worth reading, Integrating Twilio With Your Rails 4 App, but it does not cover setting up Twilio.Device or TTS in Rails 4.
+
+As mentioned above, Twilio’s TTS works through Twilio.Device, an API object. Twilio.Device serves as the main entry point for connecting with Twilio. For TTS, a connection can be understood as both a telephone and an api call. Twilio.Device connects, sends the relevant text to Twilio, holds open a port which receives an audio reading of the text, and then disconnects / hangs up.
+
+Note that Twilio.Device only works when connected to the internet. So you can’t test Twilio.Device from localhost. Instead, you’ll need to expose your localhost to the internet with a utility called ngrok, which creates a “tunnel” that lets you visit your localhost on the web. See below.
+
+In order to set up Twilio.Device in a Rails 4 app, we need to go through multiple configuration steps at both Twilio.com and within our code.
+
+Sign up for Twilio
+Install the twilio-ruby gem
+Add endpoint for Twilio
+Disable DSRF Detection on Twilio endpoint
+Create a TwiML App
+Setup Capability Tokens
+Put Capability Token and text in a form
+Add Twilio.Device javascript
+Setup ngrok to test
+Deploy
+
+ <!-- more -->
+
+Step 1) Sign up for Twilio
+
+Easy enough. You’ll need an Account SID (short for “security identifier”) and Auth Token. Remember to hide these keys in secrets.yml and .gitignore if you’re pushing up to a public repo.
+
+Step 2) Install the twilio-ruby gem
+
+Twilio provides an official ruby helper library. We’ll use the DSL from the gem to create TWiML, or Twilio XML, and to create Capability Tokens.
+
+Step 3) Add endpoints for Twilio
+
+We’re going to create a POST endpoint for Twilio to tap into our app and receive the text we want read aloud. To do this in PoemToday, I added a voice action on my poems controller.
+
+{% codeblock %} post 'poems/voice' => 'poems#voice' {% endcodeblock %}
+
+Then, within the PoemsController, I added the voice method, which builds a response object with the text we want spoken (sent as params) via the Say verb and renders that response object as TwiML. 
+
+```ruby Twilio Endpoint Example https://github.com/alexpatriquin/poem-today/blob/master/app/controllers/poems_controller.rb source
+class PoemsController < ApplicationController
+  after_filter :set_header, only: :voice
+  include Webhookable
+
+  def voice
+    response = Twilio::TwiML::Response.new do |r|
+      r.Say "#{params[:poem_content]}"
+    end
+    render_twiml response
+  end
+
+end
+```
+
+This code makes use of the set_header and render_twiml helper methods from the Twilio Rails 4 tutorial, which we can put into a Webhookable module in Concerns.
+
+module Webhookable
+extend ActiveSupport::Concern
+ 
+  def set_header
+          response.headers["Content-Type"] = "text/xml"
+  end
+ 
+  def render_twiml(response)
+          render text: response.text
+  end
+ 
+end
+
+One way to think about this code is that we’re creating an endpoint in a special variant of XML for Twilio to come and read. We’re creating a private API for Twilio.
+
+Step 4) Disable CSRF Protection on Twilio endpoint
+
+Rails 4 blocks 3rd parties from POSTing by default to prevent CSRF attacks. To do this, Rails generates a random token when a form is created and then checks the token when the form is submitted. We want to accept a POST from Twilio, so we disable CSRF detection for the voice controller action.
+
+class PoemsController < ApplicationController
+  skip_before_action :verify_authenticity_token, only: :voice
+...
+
+Step 5) Create a TwiML App
+
+Now that we have a permitted endpoint, we can create a new TwiML App, which is just a set of URLs that tells Twilio what to do when it receives a call via telephone or Twilio.Device.
+
+Create a new TwiML App under Dev Tools in your account and enter the POST endpoint as the Voice Request URL. After saving, note your new TwiML App’s SID, which we’ll need to create Capability Tokens.
+
+
+
+
+Step 6) Setup Capability Tokens
+
+In order to invoke Twilio.Device, users need to have a valid Capability Token. Tokens are valid for 24 hours and it’s better for security reasons to give each of your users their own token. I actually create one on each poem page load.
+
+Tokens can have Incoming or Outgoing Connection capabilities, or both. Since we want Twilio to POST to  our app, we’ll configure these Capability Tokens with an Outgoing Connection and pass in our TwiML App’s SID, which lets Twilio know where to find our voice endpoint.
+
+class PoemsController < ApplicationController
+...
+
+def show
+  @poem = Poem.find(params[:id])
+  new_twilio_token
+end
+
+def new_twilio_token
+  capability = Twilio::Util::Capability.new(ENV["TWILIO_ACCOUNT_SID"],ENV["TWILIO_AUTH_TOKEN"])
+  capability.allow_client_outgoing(ENV["TWILIO_APPLICATION_SID"])
+  @token = capability.generate
+end
+
+Note that we’re creating @token, an instance variable on the controller, so that we can pass it up to the view.
+
+Step 7) Put Capability Token and text in a form
+
+As we saw above in PoemsController, our Twilio Response Object accepts the text to be spoken as params, which we can send via form submission. We can use the HTML data attribute tag to pass the @token to javascript. 
+
+PoemToday actually uses a hidden form and the “volume-up” icon from Font Awesome for a submit button.
+
+<%= hidden_field_tag "content", "#{@poem.content}", id: "poem-content" %>
+<%= content_tag "div", id: "token", data: {token: @token } do %>
+<%= button_tag fa_icon("volume-up lg"), id: "keillorbot" %>
+
+Step 8) Add Twilio.Device javascript
+
+Twilio.Device is only available on pages that have twilio.js. PoemToday is mostly poem pages, so I added a javascript_include_tag to my layout.
+
+<%= javascript_include_tag "//static.twilio.com/libs/twiliojs/1.1/twilio.min.js" %>
+
+Finally, we’re ready to add the javascript that will invoke Twilio.Device with the user’s token and pass the text we want read aloud (ie, “#poem-content”). The code belong as disables the button while the connection is active.
+
+$(document).ready(function() {
+    var token = $('#token').data('token');
+    Twilio.Device.setup(token,{"debug":true});
+    $("#keillorbot").click(function() {
+        speak();
+    });
+
+    function speak() {
+        var poem_content = $("#poem-content").val(); 
+        $('#keillorbot').attr('disabled', 'disabled');
+        Twilio.Device.connect({ 'poem_content':poem_content });
+    }
+
+    Twilio.Device.disconnect(function (conn) {
+        $('#keillorbot').removeAttr('disabled');
+    });
+});
+
+Step 9) Setup ngrok to test
+
+As mentioned above, Twilio.Device only works when connected to the internet. To test, you’ll need to make localhost accessible via the internet with a utility such as ngrok. Twilio provides a good tutorial on how to setup ngrok.
+
+Be sure to create a second TwiML App with your current ngrok address as your root domain. It should look something like http://3eb3c9ba.ngrok.com/poems/voice.
+
+Step 10) Deploy
+
+That’s it! If you’ve completed all the steps above, you should be good to go with adding text-to-speech to your Rails 4 app. 
+
+If you run into any trouble or have any questions, feel free to ask me for help in the comments below or find me at @apatriq on Twitter.
