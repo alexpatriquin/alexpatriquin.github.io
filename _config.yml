@@ -3,11 +3,11 @@
 # ----------------------- #
 
 url: http://alexpatriquin.github.io
-title: My Octopress Blog
-subtitle: A blogging framework for hackers.
+title: Squarecraft by Alex Patriquin
+subtitle: Web development and product strategy
 author: Alex Patriquin
 simple_search: https://www.google.com/search
-description:
+description: Welcome to my blog. I wonder where this text will show up.
 
 # Default date format is "ordinal" (resulting in "July 22nd 2007")
 # You can customize the format as defined in
@@ -94,7 +94,7 @@ disqus_short_name:
 disqus_show_comment_count: false
 
 # Google Analytics
-google_analytics_tracking_id: 
+google_analytics_tracking_id: UA-41617050-1
 
 # Facebook Like
-facebook_like: false
+facebook_like: true
