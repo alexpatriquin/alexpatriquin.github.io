@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Squarecraft by Alex Patriquin]]></title>
+  <title><![CDATA[Squarecraft]]></title>
   <link href="http://alexpatriquin.github.io/atom.xml" rel="self"/>
   <link href="http://alexpatriquin.github.io/"/>
-  <updated>2014-05-04T14:45:20-04:00</updated>
+  <updated>2014-05-04T14:45:46-04:00</updated>
   <id>http://alexpatriquin.github.io/</id>
   <author>
     <name><![CDATA[Alex Patriquin]]></name>
