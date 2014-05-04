@@ -4,7 +4,7 @@
   <title><![CDATA[SquareCraft]]></title>
   <link href="http://alexpatriquin.github.io/atom.xml" rel="self"/>
   <link href="http://alexpatriquin.github.io/"/>
-  <updated>2014-05-04T17:31:31-04:00</updated>
+  <updated>2014-05-04T19:38:10-04:00</updated>
   <id>http://alexpatriquin.github.io/</id>
   <author>
     <name><![CDATA[Alex Patriquin]]></name>
@@ -20,11 +20,11 @@
     <id>http://alexpatriquin.github.io./twilio-text-to-speech-in-rails-4</id>
     <content type="html"><![CDATA[<p>This post walks through the steps I took to set up text-to-speech in a Rails 4 app. To learn about other options for implementing text-to-speech in web apps generally, see <a href="http://alexpatriquin.github.io/text-to-speech-options-for-web-apps">Text-To-Speech Options for Web Apps</a>.</p>
 
-<p>Also, the Twilio blog has tutorial worth reading, <a href="https://www.twilio.com/blog/2014/02/twilio-on-rails-integrating-twilio-with-your-rails-4-app.html">Integrating Twilio With Your Rails 4 App</a>, but it does not cover setting up the crucial <a href="https://www.twilio.com/docs/client/device">Twilio.Device</a> or TTS in Rails 4.</p>
+<p>Also, the Twilio blog has a tutorial worth reading, <a href="https://www.twilio.com/blog/2014/02/twilio-on-rails-integrating-twilio-with-your-rails-4-app.html">Integrating Twilio With Your Rails 4 App</a>, but it does not cover setting up the crucial <a href="https://www.twilio.com/docs/client/device">Twilio.Device</a> or TTS in Rails 4.</p>
 
-<p>Before we get started, note that Twilio.Device only works when connected to the internet. So you can’t test Twilio.Device from localhost. Instead, you’ll need to expose your localhost to the internet with a utility called ngrok, which creates a “tunnel” that lets you visit your localhost on the web. (See <a href="#ngrok">below</a>.)</p>
+<p>Before we get started, note that Twilio.Device only works when connected to the internet. So you can’t test Twilio.Device from localhost. Instead, you’ll need to expose your localhost to the internet with a utility called ngrok. (See <a href="#ngrok">below</a>.)</p>
 
-<p>In order to set up Twilio.Device in a Rails 4 app, we need to complete 10 steps at Twilio.com and within our code.</p>
+<p>In order to set up Twilio TTS in a Rails 4 app, we need to complete 10 steps.</p>
 
 <ol>
 <li>Sign up for Twilio</li>
@@ -33,7 +33,7 @@
 <li>Disable DSRF Detection on Twilio endpoint</li>
 <li>Create a TwiML App</li>
 <li>Setup Capability Tokens</li>
-<li>Put Capability Token and text in a form</li>
+<li>Put Capability Token and text in an HTML form</li>
 <li>Add Twilio.Device javascript</li>
 <li>Setup ngrok to test</li>
 <li>Deploy</li>
@@ -43,7 +43,7 @@
 <!-- more -->
 
 
-<p>Let&rsquo;s begin.</p>
+<p>For this walkthrough, I&rsquo;ll refer to code examples from <a href="http://www.poemtoday.com/">PoemToday</a>, a Rails 4 app that generates random poems from user input and reads them aloud. Let&rsquo;s begin.</p>
 
 <h3>1) Sign up for Twilio</h3>
 
@@ -61,7 +61,7 @@
 </pre></td><td class='code'><pre><code class=''><span class='line'>post 'poems/voice' => 'poems#voice'</span></code></pre></td></tr></table></div></figure>
 
 
-<p>Then, within the PoemsController, I added the voice method, which builds a response object with the text we want spoken (sent as <code>params</code>) via the <a href="https://www.twilio.com/docs/api/twiml/say">Say</a> verb and renders that response object as TwiML.</p>
+<p>Then, within the PoemsController, I setup the <code>voice</code> action to build a Twilio Response Object with the text we want spoken (sent as <code>params</code>). The method utilizes Twilio&rsquo;s <a href="https://www.twilio.com/docs/api/twiml/say">Say</a> verb and renders the <code>response</code> as TwiML.</p>
 
 <figure class='code'><figcaption><span>Twilio Endpoint Example</span><a href='https://github.com/alexpatriquin/poem-today/blob/master/app/controllers/poems_controller.rb'>source</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -119,7 +119,7 @@
 
 <h3>4) Disable CSRF Protection on Twilio endpoint</h3>
 
-<p>By default, Rails 4 blocks 3rd parties from <code>POST</code>ing to prevent CSRF attacks. To accomplish this, Rails generates a random token when a form is created and then checks the token when the form is submitted. We want to accept a <code>POST</code> from Twilio, so we disable CSRF detection for the voice controller action.</p>
+<p>By default, Rails 4 blocks 3rd parties from <code>POST</code>ing, so as to prevent CSRF attacks. To accomplish this, Rails generates a random token when a form is created and then checks the token when the form is submitted. We want to accept a <code>POST</code> from Twilio, so we&rsquo;ll disable CSRF detection for the voice controller action.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -132,7 +132,7 @@
 
 <p>Now that we have a permitted endpoint, we can create a new TwiML App, which is just a set of URLs that tells Twilio what to do when it receives a call via telephone or Twilio.Device.</p>
 
-<p>Create a new TwiML App under Dev Tools in your account and enter the <code>POST</code> endpoint as the <code>Voice Request URL</code>. After saving, note your new TwiML App’s <code>SID</code>, which we’ll need to create Capability Tokens.</p>
+<p>Create a new TwiML App under Dev Tools in your account and enter the <code>POST</code> endpoint (ie, <code>http://poemtoday/poems/voice</code>) as the <code>Voice Request URL</code>. After saving, note your new TwiML App’s <code>SID</code>, which we’ll need to create Capability Tokens.</p>
 
 <h3>6) Setup Capability Tokens</h3>
 
@@ -171,11 +171,13 @@
 
 <p>Note that we’re creating <code>@token</code>, an instance variable on the controller, so that we can pass it up to the view.</p>
 
-<h3>7) Put Capability Token and text in a form</h3>
+<h3>7) Put Capability Token and text in an HTML form</h3>
 
 <p>As we saw above in PoemsController, our Twilio Response Object accepts the text to be spoken as params, which we can send via form submission. We can use the HTML <code>data</code> attribute tag to pass the <code>@token</code> to javascript.</p>
 
-<p>PoemToday actually uses a hidden form and the “volume-up” icon from Font Awesome for a submit button.</p>
+<p><a href="http://www.poemtoday.com/poems/5706?keyword=voice"><img class="center" src="./images/post_images/voice-icon.png" width="300"></a></p>
+
+<p>PoemToday actually uses a hidden form and the <code>volume-up</code> icon from <a href="http://fortawesome.github.io/">Font Awesome</a> for a submit button.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -197,7 +199,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Finally, we’re ready to add the javascript that will invoke Twilio.Device with the user’s token and pass the text we want read aloud (ie <code>#poem-content</code>). The code belong as disables the button while the connection is active.</p>
+<p>Finally, we’re ready to add the javascript that will invoke Twilio.Device with the user’s token and pass the text we want read aloud (ie, <code>#poem-content</code>). The code below disables the button while the connection is active.</p>
 
 <figure class='code'><figcaption><span>Twilio.Device Example</span><a href='https://github.com/alexpatriquin/poem-today/blob/master/app/assets/javascripts/poems.js'>source</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -240,7 +242,7 @@
 
 <p>As mentioned above, Twilio.Device only works when connected to the internet. To test, you’ll need to make localhost accessible via the internet with a utility such as ngrok. Twilio provides a good tutorial on <a href="https://www.twilio.com/blog/2013/10/test-your-webhooks-locally-with-ngrok.html">how to setup ngrok</a>.</p>
 
-<p>Be sure to create a second TwiML App with your current ngrok address as your root domain. It should look something like <code>http://3eb3c9ba.ngrok.com/poems/voice</code>.</p>
+<p>Be sure to create a second TwiML App with your currently running ngrok address as your root domain. It should look something like <code>http://3eb3c9ba.ngrok.com/poems/voice</code>.</p>
 
 <h3><a name="deploy"></a>10) Deploy</h3>
 
@@ -259,8 +261,6 @@
 
 <p>This proved to be easier said than done. First, there was a dearth of good quality options for text-to-speech that fit right into Rails. Second, with the Twilio implementation I chose to make, there were a few configuration steps between Twilio and Rails that were neither obvious nor well documented.</p>
 
-<h2>Current TTS Options for Apps</h2>
-
 <p>Currently there’s a dearth of good quality text-to-speech options for web apps. I can’t really speak to mobile and desktop apps, but I believe those those platforms offer native TTS capabilities which developers can hook into.</p>
 
 <p>Some web app options, like AT&amp;T, were paid services that seemed to actually require more of an integration hurdle and impose all kinds of usage restrictions. Others like the <a href="https://github.com/c2h2/tts">tts</a> gem relied on a Google Translate hack which limited the spoken text to only 100 characters, about a sentence. A haiku might fit under that limit, but not a medium-length or longer poem. I also reached out to <a href="https://wit.ai/">Wit.ai</a>, but they said they don’t offer TTS yet.</p>
@@ -272,6 +272,144 @@
 <p>Also, while researching this post, I found the <a href="https://github.com/dejan/espeak-ruby">espeak-ruby</a> gem, which I’ll haven’t tried out&hellip; I’ll have to come back soon and post an update. In the meantime, I’m glad I got a chance to figure out the Twilio implementation as I learned a lot.</p>
 
 <p>See the steps I took to implement <a href="http://alexpatriquin.github.io/twilio-text-to-speech-in-rails-4">Twilio text-to-speech in Rails 4</a>.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[How I Built PoemToday]]></title>
+    <link href="http://alexpatriquin.github.iohow-i-built-poemtoday/"/>
+    <updated>2014-04-28T18:49:57-04:00</updated>
+    <id>http://alexpatriquin.github.io./how-i-built-poemtoday</id>
+    <content type="html"><![CDATA[<p>I graduated from the <a href="http://flatironschool.com/">Flatiron School</a> last week and, after an exhilarating three months, had the chance to present my final projects at our Science Fair. Along with <a href="http://tendermessenger.com/">Tender</a>, I presented PoemToday, a random poem generator that&rsquo;s powered by user behavior. Here is the story of how it works and how I made it.</p>
+
+<p><a href="http://www.poemtoday.com/poems/3568?keyword=plato"><img class="center" src="../images/post_images/stats-poem.png" width="500"></a></p>
+
+<p><a href="http://www.poemtoday.com/">PoemToday</a> (also on <a href="https://github.com/alexpatriquin/poem-today">Github</a>) is a Rails web app that statistically generates a poem based on its users&#8217; profile and behavior. Each of the 6,000 poems on the site actually has a link wrapped around every word in every poem. When a user clicks one of the words, the site initiates a search of its database for the best-matching poem and redirects the user to the top result, alongside with the top image from the Flickr API for that word.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">save_top_result</span>
+</span><span class='line'>  <span class="vi">@poem</span> <span class="o">=</span> <span class="vi">@results</span><span class="o">.</span><span class="n">inject</span> <span class="k">do</span> <span class="o">|</span><span class="n">winning</span><span class="p">,</span><span class="n">result</span><span class="o">|</span>
+</span><span class='line'>  <span class="n">winning</span><span class="o">[</span><span class="ss">:match_score</span><span class="o">]</span> <span class="o">&gt;</span> <span class="n">result</span><span class="o">[</span><span class="ss">:match_score</span><span class="o">]</span> <span class="p">?</span> <span class="n">winning</span> <span class="p">:</span> <span class="n">result</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">get_image_url</span><span class="p">(</span><span class="n">keyword</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">flickr</span><span class="o">.</span><span class="n">photos</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s2">&quot;text&quot;</span><span class="o">=&gt;</span><span class="s2">&quot;</span><span class="si">#{</span><span class="n">keyword</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;sort&quot;</span><span class="o">=&gt;</span> <span class="s2">&quot;relevance&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">first</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Behind the scenes, PoemToday is storing information about all of the words the user has clicked and the poems the user has visited in a temporary session. When the session has enough data, it statistically generates a completely unique &ldquo;ephemeral&rdquo; poem with a statistical process known as a <a href="http://en.wikipedia.org/wiki/Markov_chain">Markov chain</a>.</p>
+
+<h3>simplenlg vs. Markov chains</h3>
+
+<p>Initially I tried to implement a linguistics strategy for randomly generating poems. If a user had clicked three nouns, I figured,  how difficult would it be to find a verb and then create a semi-sensical sentence? Using the Wordnik API and a ruleset I could fill in the missing parts of speech.</p>
+
+<p>I spent a while building a Natural Language Generator without realizing that was what I was doing. Then I stumbled on simplenlg, both the <a href="https://code.google.com/p/simplenlg/">Java API</a> and the <a href="https://github.com/efi/simplenlg">ruby gem</a>, which opened up a whole new tangent of linguistic programming to me. I really love language (why else would I make a random poetry app?? ;) and this intersection of code and linguistics was an especially exciting turn in the project.</p>
+
+<p>With user-selected keywords, simplenlg, and the Wordnik API&rsquo;s random words endpoint, which features random word generation by part of speech as well as frequency, I was able to weave together some fairly compelling random poems.</p>
+
+<p>Then I stumbled upon Markov chains in my research, which on the first few tests in the command line quickly proved much more compelling than my patchwork NLG solution. The Markov chains were uncanny and required users click far fewer keywords to produce better sounding random poetry. It was a much lower bar to &ldquo;minimum emotional product&rdquo;.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">create_ephemeral_poem</span>
+</span><span class='line'>  <span class="vi">@poem_title</span> <span class="o">=</span> <span class="n">session</span><span class="o">[</span><span class="ss">:ephemeral_poem</span><span class="o">].</span><span class="n">values</span><span class="o">[-</span><span class="mi">4</span><span class="o">.</span><span class="n">.</span><span class="o">-</span><span class="mi">1</span><span class="o">].</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+</span><span class='line'>  <span class="vi">@poem_body</span> <span class="o">&lt;&lt;</span> <span class="n">markov</span><span class="o">.</span><span class="n">generate_5_sentences</span>
+</span><span class='line'>  <span class="vi">@poet</span> <span class="o">=</span> <span class="s2">&quot;You&quot;</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The most fascinating aspect of Markov chains to me is that they know nothing about parts of speech or linguistics. They are just pure mathematics. And yet they sound so human.</p>
+
+<p>I implemented the Markov chain with the <a href="https://github.com/zolrath/marky_markov">Marky Markov gem</a>, though I will do my own <a href="https://gist.github.com/alexpatriquin/11226396">implementation in ruby</a> soon.</p>
+
+<h3>Matching Algorithm</h3>
+
+<p>PoemToday also features a daily email option. The app will email you a poem every morning, along with information about why that poem was matched to you on that day.</p>
+
+<p>The app connects to APIs from Twitter, The New York Times and Forecast.io for user profile data sources. The app also uses the Wordnik API to score keywords on frequency from each data source. The Wordnik API goes back to 1800, but I limited it to 2000 for contemporary word usage.</p>
+
+<p>I treated keyword frequency like golf scores &ndash; the lower, the better, so that rare words percolate to the top of poem matches and users&#8217; inboxes. You can get a good sense of how the user-to-poem daily matching algorithm works from this Gist.</p>
+
+<figure class='code'><figcaption><span>Keyword-Poem Match Scoring</span><a href='https://github.com/alexpatriquin/poem-today/blob/master/app/models/poem_scorer.rb'>source</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="k">def</span> <span class="nf">score_by_keyword_source</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">case</span> <span class="n">result</span><span class="o">[</span><span class="ss">:keyword_source</span><span class="o">]</span>
+</span><span class='line'>    <span class="k">when</span> <span class="ss">:twitter</span>
+</span><span class='line'>      <span class="n">result</span><span class="o">[</span><span class="ss">:match_score</span><span class="o">]</span> <span class="o">+=</span> <span class="mi">40</span>
+</span><span class='line'>    <span class="k">when</span> <span class="ss">:news</span>
+</span><span class='line'>      <span class="n">result</span><span class="o">[</span><span class="ss">:match_score</span><span class="o">]</span> <span class="o">+=</span> <span class="mi">30</span>
+</span><span class='line'>    <span class="k">when</span> <span class="ss">:forecast</span>
+</span><span class='line'>      <span class="n">result</span><span class="o">[</span><span class="ss">:match_score</span><span class="o">]</span> <span class="o">+=</span> <span class="mi">20</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">score_by_match_type</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">case</span> <span class="n">result</span><span class="o">[</span><span class="ss">:match_type</span><span class="o">]</span>
+</span><span class='line'>    <span class="k">when</span> <span class="ss">:occasion</span> <span class="o">||</span> <span class="ss">:subject</span> <span class="o">||</span> <span class="ss">:poet</span>
+</span><span class='line'>      <span class="n">result</span><span class="o">[</span><span class="ss">:match_score</span><span class="o">]</span> <span class="o">+=</span> <span class="mi">100</span>
+</span><span class='line'>    <span class="k">when</span> <span class="ss">:title</span>
+</span><span class='line'>      <span class="n">result</span><span class="o">[</span><span class="ss">:match_score</span><span class="o">]</span> <span class="o">+=</span> <span class="mi">50</span>
+</span><span class='line'>    <span class="k">when</span> <span class="ss">:first_line</span>
+</span><span class='line'>      <span class="n">result</span><span class="o">[</span><span class="ss">:match_score</span><span class="o">]</span> <span class="o">+=</span> <span class="mi">30</span>
+</span><span class='line'>    <span class="k">when</span> <span class="ss">:content</span>
+</span><span class='line'>      <span class="n">result</span><span class="o">[</span><span class="ss">:match_score</span><span class="o">]</span> <span class="o">+=</span> <span class="mi">10</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">score_by_frequency</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</span><span class='line'>    <span class="c1">#birthdays, name days and holidays have 0 freq =&gt; 100 points</span>
+</span><span class='line'>    <span class="n">frequency_score</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1000</span> <span class="o">-</span> <span class="n">result</span><span class="o">[</span><span class="ss">:keyword_frequency</span><span class="o">]</span><span class="p">)</span> <span class="o">/</span> <span class="mi">10</span>
+</span><span class='line'>    <span class="n">result</span><span class="o">[</span><span class="ss">:match_score</span><span class="o">]</span> <span class="o">+=</span> <span class="n">frequency_score</span>
+</span><span class='line'>  <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I also used a Postgres search gem, pg_search, to quickly search through all of the poems and their content. This was a lightweight option versus implementing a platform such as Solr or EC2.</p>
+
+<p>Finally, I used <a href="http://localhost:4000/twilio-text-to-speech-in-rails-4">Twilio&rsquo;s text-to-speech</a> feature to read the poems in a fun robot voice. This was actually one of harder parts of the project as it required that I create a virtual <a href="http://localhost:4000/twilio-text-to-speech-in-rails-4">Twilio device</a> with Javascript on each poem page load and could only test it in production or with ultra-slow ngrok, which exposed my local web server to the internet.</p>
+
+<p>PoemToday was definitely my most ambitious technical project to date. Judging from the fascinated reactions of a few dozen people at the Flatiron School Science Fair, I&rsquo;d say it was a success so far and I look forward to continuing to build it.</p>
 ]]></content>
   </entry>
   

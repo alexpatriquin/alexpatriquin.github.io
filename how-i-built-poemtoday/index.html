@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>SquareCraft</title>
+  <title>How I Built PoemToday - SquareCraft</title>
   <meta name="author" content="Alex Patriquin">
 
   
-  <meta name="description" content="This post walks through the steps I took to set up text-to-speech in a Rails 4 app. To learn about other options for implementing text-to-speech in &hellip;">
+  <meta name="description" content="I graduated from the Flatiron School last week and, after an exhilarating three months, had the chance to present my final projects at our Science &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://alexpatriquin.github.io/">
+  <link rel="canonical" href="http://alexpatriquin.github.iohow-i-built-poemtoday/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -77,126 +77,12 @@
 </nav>
   <div id="main">
     <div id="content">
-      <div class="blog-index">
+      <div>
+<article class="hentry" role="article">
   
-  
-  
-    <article>
-      
   <header>
     
-      <h1 class="entry-title"><a href="twilio-text-to-speech-in-rails-4">Twilio Text-To-Speech in Rails 4</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-05-04T15:06:41-04:00" pubdate data-updated="true">May 4<span>th</span>, 2014</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>This post walks through the steps I took to set up text-to-speech in a Rails 4 app. To learn about other options for implementing text-to-speech in web apps generally, see <a href="/text-to-speech-options-for-web-apps">Text-To-Speech Options for Web Apps</a>.</p>
-
-<p>Also, the Twilio blog has a tutorial worth reading, <a href="https://www.twilio.com/blog/2014/02/twilio-on-rails-integrating-twilio-with-your-rails-4-app.html">Integrating Twilio With Your Rails 4 App</a>, but it does not cover setting up the crucial <a href="https://www.twilio.com/docs/client/device">Twilio.Device</a> or TTS in Rails 4.</p>
-
-<p>Before we get started, note that Twilio.Device only works when connected to the internet. So you can’t test Twilio.Device from localhost. Instead, you’ll need to expose your localhost to the internet with a utility called ngrok. (See <a href="#ngrok">below</a>.)</p>
-
-<p>In order to set up Twilio TTS in a Rails 4 app, we need to complete 10 steps.</p>
-
-<ol>
-<li>Sign up for Twilio</li>
-<li>Install the twilio-ruby gem</li>
-<li>Add endpoint for Twilio</li>
-<li>Disable DSRF Detection on Twilio endpoint</li>
-<li>Create a TwiML App</li>
-<li>Setup Capability Tokens</li>
-<li>Put Capability Token and text in an HTML form</li>
-<li>Add Twilio.Device javascript</li>
-<li>Setup ngrok to test</li>
-<li>Deploy</li>
-</ol>
-
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="twilio-text-to-speech-in-rails-4">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="text-to-speech-options-for-web-apps">Text-To-Speech Options for Web Apps</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-05-04T13:07:46-04:00" pubdate data-updated="true">May 4<span>th</span>, 2014</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>While I was building <a href="http://www.poemtoday.com/">PoemToday</a>, I wanted to add a feature that enabled users to play any poem aloud in a robot voice. If the inspiration for PoemToday, <a href="http://writersalmanac.publicradio.org/">The Writer&rsquo;s Almanac</a>, had Garrison Keillor’s voice coming over the NPR radio waves every morning, then my app would have the voice not of a killer robot, but a Keillorbot.</p>
-
-<p>This proved to be easier said than done. First, there was a dearth of good quality options for text-to-speech that fit right into Rails. Second, with the Twilio implementation I chose to make, there were a few configuration steps between Twilio and Rails that were neither obvious nor well documented.</p>
-
-<p>Currently there’s a dearth of good quality text-to-speech options for web apps. I can’t really speak to mobile and desktop apps, but I believe those those platforms offer native TTS capabilities which developers can hook into.</p>
-
-<p>Some web app options, like AT&amp;T, were paid services that seemed to actually require more of an integration hurdle and impose all kinds of usage restrictions. Others like the <a href="https://github.com/c2h2/tts">tts</a> gem relied on a Google Translate hack which limited the spoken text to only 100 characters, about a sentence. A haiku might fit under that limit, but not a medium-length or longer poem. I also reached out to <a href="https://wit.ai/">Wit.ai</a>, but they said they don’t offer TTS yet.</p>
-
-<p>The better options were <a href="https://www.twilio.com/docs/howto/twilio-client-text-to-speech">Twilio</a> and <a href="http://tts-api.com/">tts-api.com</a>. Twilio makes text-to-speech available through Twilio.Device, an API object that effectively turns your users’ browser into a phone or “soft device”. Meanwhile tts-api.com is just a one-page website with a single textarea on a form that returns an mp3 audio file when submitted. Nice and simple!</p>
-
-<p>Even though it was probably the best option in terms of performance, I didn’t want to download and store 6,000 mp3 files from tts-api.com, one for each poem, and rack up hosting fees. I could’ve also had the mp3 file from tts-api.com pop up in a new window, but I dislike pop ups (they’re terrible user experience) so I went with Twilio.</p>
-
-<p>Also, while researching this post, I found the <a href="https://github.com/dejan/espeak-ruby">espeak-ruby</a> gem, which I’ll haven’t tried out&hellip; I’ll have to come back soon and post an update. In the meantime, I’m glad I got a chance to figure out the Twilio implementation as I learned a lot.</p>
-
-<p>See the steps I took to implement <a href="/twilio-text-to-speech-in-rails-4">Twilio text-to-speech in Rails 4</a>.</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="how-i-built-poemtoday/">How I Built PoemToday</a></h1>
+      <h1 class="entry-title">How I Built PoemToday</h1>
     
     
       <p class="meta">
@@ -219,7 +105,7 @@
   </header>
 
 
-  <div class="entry-content"><p>I graduated from the <a href="http://flatironschool.com/">Flatiron School</a> last week and, after an exhilarating three months, had the chance to present my final projects at our Science Fair. Along with <a href="http://tendermessenger.com/">Tender</a>, I presented PoemToday, a random poem generator that&rsquo;s powered by user behavior. Here is the story of how it works and how I made it.</p>
+<div class="entry-content"><p>I graduated from the <a href="http://flatironschool.com/">Flatiron School</a> last week and, after an exhilarating three months, had the chance to present my final projects at our Science Fair. Along with <a href="http://tendermessenger.com/">Tender</a>, I presented PoemToday, a random poem generator that&rsquo;s powered by user behavior. Here is the story of how it works and how I made it.</p>
 
 <p><a href="http://www.poemtoday.com/poems/3568?keyword=plato"><img class="center" src="../images/post_images/stats-poem.png" width="500"></a></p>
 
@@ -350,18 +236,51 @@
 
 <p>PoemToday was definitely my most ambitious technical project to date. Judging from the fascinated reactions of a few dozen people at the Flatiron School Science Fair, I&rsquo;d say it was a success so far and I look forward to continuing to build it.</p>
 </div>
+
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">Alex Patriquin</span></span>
+
+      
+
+
+
+
+
+
+
+
   
 
 
-    </article>
+<time datetime="2014-04-28T18:49:57-04:00" pubdate data-updated="true">Apr 28<span>th</span>, 2014</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
   
-  <div class="pagination">
-    
-    <a href="/blog/archives">Blog Archives</a>
-    
-  </div>
+  
+  
 </div>
+
+    
+    <p class="meta">
+      
+      
+        <a class="basic-alignment right" href="text-to-speech-options-for-web-apps" title="Next Post: Text-To-Speech Options for Web Apps">Text-To-Speech Options for Web Apps &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
 <aside class="sidebar">
   
     <section>
@@ -386,7 +305,7 @@
 <section>
   <h1>GitHub Repos</h1>
   <ul id="gh_repos">
-    <li class="loading">Status updating&#8230;</li>
+    <li class="loading">Status updating...</li>
   </ul>
   
   <a href="https://github.com/alexpatriquin">@alexpatriquin</a> on GitHub
@@ -418,6 +337,7 @@
 
   
 </aside>
+
 
     </div>
   </div>

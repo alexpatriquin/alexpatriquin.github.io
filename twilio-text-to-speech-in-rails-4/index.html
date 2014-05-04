@@ -107,11 +107,11 @@
 
 <div class="entry-content"><p>This post walks through the steps I took to set up text-to-speech in a Rails 4 app. To learn about other options for implementing text-to-speech in web apps generally, see <a href="/text-to-speech-options-for-web-apps">Text-To-Speech Options for Web Apps</a>.</p>
 
-<p>Also, the Twilio blog has tutorial worth reading, <a href="https://www.twilio.com/blog/2014/02/twilio-on-rails-integrating-twilio-with-your-rails-4-app.html">Integrating Twilio With Your Rails 4 App</a>, but it does not cover setting up the crucial <a href="https://www.twilio.com/docs/client/device">Twilio.Device</a> or TTS in Rails 4.</p>
+<p>Also, the Twilio blog has a tutorial worth reading, <a href="https://www.twilio.com/blog/2014/02/twilio-on-rails-integrating-twilio-with-your-rails-4-app.html">Integrating Twilio With Your Rails 4 App</a>, but it does not cover setting up the crucial <a href="https://www.twilio.com/docs/client/device">Twilio.Device</a> or TTS in Rails 4.</p>
 
-<p>Before we get started, note that Twilio.Device only works when connected to the internet. So you can’t test Twilio.Device from localhost. Instead, you’ll need to expose your localhost to the internet with a utility called ngrok, which creates a “tunnel” that lets you visit your localhost on the web. (See <a href="#ngrok">below</a>.)</p>
+<p>Before we get started, note that Twilio.Device only works when connected to the internet. So you can’t test Twilio.Device from localhost. Instead, you’ll need to expose your localhost to the internet with a utility called ngrok. (See <a href="#ngrok">below</a>.)</p>
 
-<p>In order to set up Twilio.Device in a Rails 4 app, we need to complete 10 steps at Twilio.com and within our code.</p>
+<p>In order to set up Twilio TTS in a Rails 4 app, we need to complete 10 steps.</p>
 
 <ol>
 <li>Sign up for Twilio</li>
@@ -120,7 +120,7 @@
 <li>Disable DSRF Detection on Twilio endpoint</li>
 <li>Create a TwiML App</li>
 <li>Setup Capability Tokens</li>
-<li>Put Capability Token and text in a form</li>
+<li>Put Capability Token and text in an HTML form</li>
 <li>Add Twilio.Device javascript</li>
 <li>Setup ngrok to test</li>
 <li>Deploy</li>
@@ -130,7 +130,7 @@
 <!-- more -->
 
 
-<p>Let&rsquo;s begin.</p>
+<p>For this walkthrough, I&rsquo;ll refer to code examples from <a href="http://www.poemtoday.com/">PoemToday</a>, a Rails 4 app that generates random poems from user input and reads them aloud. Let&rsquo;s begin.</p>
 
 <h3>1) Sign up for Twilio</h3>
 
@@ -148,7 +148,7 @@
 </pre></td><td class='code'><pre><code class=''><span class='line'>post 'poems/voice' => 'poems#voice'</span></code></pre></td></tr></table></div></figure>
 
 
-<p>Then, within the PoemsController, I added the voice method, which builds a response object with the text we want spoken (sent as <code>params</code>) via the <a href="https://www.twilio.com/docs/api/twiml/say">Say</a> verb and renders that response object as TwiML.</p>
+<p>Then, within the PoemsController, I setup the <code>voice</code> action to build a Twilio Response Object with the text we want spoken (sent as <code>params</code>). The method utilizes Twilio&rsquo;s <a href="https://www.twilio.com/docs/api/twiml/say">Say</a> verb and renders the <code>response</code> as TwiML.</p>
 
 <figure class='code'><figcaption><span>Twilio Endpoint Example</span><a href='https://github.com/alexpatriquin/poem-today/blob/master/app/controllers/poems_controller.rb'>source</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -206,7 +206,7 @@
 
 <h3>4) Disable CSRF Protection on Twilio endpoint</h3>
 
-<p>By default, Rails 4 blocks 3rd parties from <code>POST</code>ing to prevent CSRF attacks. To accomplish this, Rails generates a random token when a form is created and then checks the token when the form is submitted. We want to accept a <code>POST</code> from Twilio, so we disable CSRF detection for the voice controller action.</p>
+<p>By default, Rails 4 blocks 3rd parties from <code>POST</code>ing, so as to prevent CSRF attacks. To accomplish this, Rails generates a random token when a form is created and then checks the token when the form is submitted. We want to accept a <code>POST</code> from Twilio, so we&rsquo;ll disable CSRF detection for the voice controller action.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -219,7 +219,7 @@
 
 <p>Now that we have a permitted endpoint, we can create a new TwiML App, which is just a set of URLs that tells Twilio what to do when it receives a call via telephone or Twilio.Device.</p>
 
-<p>Create a new TwiML App under Dev Tools in your account and enter the <code>POST</code> endpoint as the <code>Voice Request URL</code>. After saving, note your new TwiML App’s <code>SID</code>, which we’ll need to create Capability Tokens.</p>
+<p>Create a new TwiML App under Dev Tools in your account and enter the <code>POST</code> endpoint (ie, <code>http://poemtoday/poems/voice</code>) as the <code>Voice Request URL</code>. After saving, note your new TwiML App’s <code>SID</code>, which we’ll need to create Capability Tokens.</p>
 
 <h3>6) Setup Capability Tokens</h3>
 
@@ -258,11 +258,13 @@
 
 <p>Note that we’re creating <code>@token</code>, an instance variable on the controller, so that we can pass it up to the view.</p>
 
-<h3>7) Put Capability Token and text in a form</h3>
+<h3>7) Put Capability Token and text in an HTML form</h3>
 
 <p>As we saw above in PoemsController, our Twilio Response Object accepts the text to be spoken as params, which we can send via form submission. We can use the HTML <code>data</code> attribute tag to pass the <code>@token</code> to javascript.</p>
 
-<p>PoemToday actually uses a hidden form and the “volume-up” icon from Font Awesome for a submit button.</p>
+<p><a href="http://www.poemtoday.com/poems/5706?keyword=voice"><img class="center" src="./images/post_images/voice-icon.png" width="300"></a></p>
+
+<p>PoemToday actually uses a hidden form and the <code>volume-up</code> icon from <a href="http://fortawesome.github.io/">Font Awesome</a> for a submit button.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -284,7 +286,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Finally, we’re ready to add the javascript that will invoke Twilio.Device with the user’s token and pass the text we want read aloud (ie <code>#poem-content</code>). The code belong as disables the button while the connection is active.</p>
+<p>Finally, we’re ready to add the javascript that will invoke Twilio.Device with the user’s token and pass the text we want read aloud (ie, <code>#poem-content</code>). The code below disables the button while the connection is active.</p>
 
 <figure class='code'><figcaption><span>Twilio.Device Example</span><a href='https://github.com/alexpatriquin/poem-today/blob/master/app/assets/javascripts/poems.js'>source</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -327,7 +329,7 @@
 
 <p>As mentioned above, Twilio.Device only works when connected to the internet. To test, you’ll need to make localhost accessible via the internet with a utility such as ngrok. Twilio provides a good tutorial on <a href="https://www.twilio.com/blog/2013/10/test-your-webhooks-locally-with-ngrok.html">how to setup ngrok</a>.</p>
 
-<p>Be sure to create a second TwiML App with your current ngrok address as your root domain. It should look something like <code>http://3eb3c9ba.ngrok.com/poems/voice</code>.</p>
+<p>Be sure to create a second TwiML App with your currently running ngrok address as your root domain. It should look something like <code>http://3eb3c9ba.ngrok.com/poems/voice</code>.</p>
 
 <h3><a name="deploy"></a>10) Deploy</h3>
 
@@ -358,6 +360,12 @@
 
 <time datetime="2014-05-04T15:06:41-04:00" pubdate data-updated="true">May 4<span>th</span>, 2014</time>
       
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/tutorials/'>Tutorials</a>
+  
+</span>
 
 
     </p>
@@ -392,6 +400,10 @@
     
       <li class="post">
         <a href="text-to-speech-options-for-web-apps">Text-To-Speech Options for Web Apps</a>
+      </li>
+    
+      <li class="post">
+        <a href="how-i-built-poemtoday/">How I Built PoemToday</a>
       </li>
     
   </ul>
