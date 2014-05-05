@@ -11,7 +11,7 @@ This post walks through the steps I took to set up text-to-speech in a Rails 4 a
 
 Also, the Twilio blog has a tutorial worth reading, [Integrating Twilio With Your Rails 4 App](https://www.twilio.com/blog/2014/02/twilio-on-rails-integrating-twilio-with-your-rails-4-app.html), but it does not cover setting up the crucial [Twilio.Device](https://www.twilio.com/docs/client/device) or TTS in Rails 4.
 
-Before we get started, note that Twilio.Device only works when connected to the internet. So you can’t test Twilio.Device from localhost. Instead, you’ll need to expose your localhost to the internet with a utility called ngrok. (See [below](#ngrok).)
+Before we get started, note that Twilio.Device only works when connected to the internet. So you can’t test Twilio.Device from localhost. Instead, you’ll need to expose your localhost to the internet with a utility called ngrok. (See #9 below.)
 
 In order to set up Twilio TTS in a Rails 4 app, we need to complete 10 steps.
 

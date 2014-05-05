@@ -21,19 +21,15 @@ We used Ruby on Rails as the framework and built the Bitcoin transactions featur
 
 ```ruby Tender Send-Request Bitcoin https://github.com/alexpatriquin/BitcoinMessenger/blob/master/app/controllers/conversations_controller.rb source
 def send_message_and_bitcoin
-  current_user.send_message(@recipient, @message, 'You\'ve got Bitcoin.')
+  current_user.send_message(@recipient, @message='You\'ve got Bitcoin.')
   current_user.send_bitcoin(@recipient, @amount)
-  @message.update(@amount, params[:send_or_request], @recipient.id)
-  redirect_to @current_page, notice: "Sent #{@amount} to #{@recipient.email}."
   debit_balance(@amount)
   credit_balance(@recipient, @amount)
 end
 
 def send_message_and_request_bitcoin
-  current_user.send_message(@recipient, @message, 'You\'ve got Bitcoin.')
-  current_user.request_bitcoin(@recipient, @amount, @message)
-  @message.update(@amount, params[:send_or_request], @recipient.id)
-  redirect_to @current_page, notice: "Sent request for #{@amount} to #{@recipient.email}."
+  current_user.send_message(@recipient, @message='Send Bitcoin please.')
+  current_user.request_bitcoin(@recipient, @amount)
 end
 ```
 
