@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "How I Built PoemToday"
-permalink: "how-i-built-poemtoday"
+permalink: "/how-i-built-poemtoday"
 date: 2014-04-28 18:49:57 -0400
 comments: true
 categories: [Projects, Rails 4, NLP, Poetry]

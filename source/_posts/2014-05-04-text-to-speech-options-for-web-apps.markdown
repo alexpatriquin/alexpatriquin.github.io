@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Text-To-Speech Options for Web Apps"
-permalink: "text-to-speech-options-for-web-apps"
+permalink: "/text-to-speech-options-for-web-apps"
 date: 2014-05-04 14:07:46 -0300
 comments: true
 categories: [NLP]

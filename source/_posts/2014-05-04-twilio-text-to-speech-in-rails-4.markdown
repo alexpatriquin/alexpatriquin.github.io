@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Twilio Text-To-Speech in Rails 4"
-permalink: "twilio-text-to-speech-in-rails-4"
+permalink: "/twilio-text-to-speech-in-rails-4"
 date: 2014-05-04 15:06:41 -0400
 comments: true
 categories: [Tutorials, Rails 4, NLP]

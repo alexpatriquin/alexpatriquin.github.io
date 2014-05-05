@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Introducing Tender"
-permalink: "introducing-tender"
+permalink: "/introducing-tender"
 date: 2014-04-27 17:49:57 -0400
 comments: true
 categories: [Projects, Rails 4, Bitcoin]
