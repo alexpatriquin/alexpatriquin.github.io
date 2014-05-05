@@ -4,7 +4,7 @@ title: "Twilio Text-To-Speech in Rails 4"
 permalink: "twilio-text-to-speech-in-rails-4"
 date: 2014-05-04 15:06:41 -0400
 comments: true
-categories: [Tutorials]
+categories: [Tutorials, Rails 4, NLP]
 ---
 
 This post walks through the steps I took to set up text-to-speech in a Rails 4 app. To learn about other options for implementing text-to-speech in web apps generally, see [Text-To-Speech Options for Web Apps](/text-to-speech-options-for-web-apps).

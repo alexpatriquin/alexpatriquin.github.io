@@ -1,17 +1,17 @@
 ---
 layout: post
 title: "How I Built PoemToday"
-permalink: "how-i-built-poemtoday/"
+permalink: "how-i-built-poemtoday"
 date: 2014-04-28 18:49:57 -0400
 comments: true
-categories: 
+categories: [Projects, Rails 4, NLP, Poetry]
 ---
 
-I graduated from the [Flatiron School](http://flatironschool.com/) last week and, after an exhilarating three months, had the chance to present my final projects at our Science Fair. Along with [Tender](http://tendermessenger.com/), I presented PoemToday, a random poem generator that's powered by user behavior. Here is the story of how it works and how I made it.
+Today I'm introducing [PoemToday](http://www.poemtoday.com/), a random poem generator that's powered by user behavior. Here is the story of how it works and how I made it.
 
 [{% img center ../images/post_images/stats-poem.png 500 %}](http://www.poemtoday.com/poems/3568?keyword=plato)
 
-[PoemToday](http://www.poemtoday.com/) (also on [Github](https://github.com/alexpatriquin/poem-today)) is a Rails web app that statistically generates a poem based on its users' profile and behavior. Each of the 6,000 poems on the site actually has a link wrapped around every word in every poem. When a user clicks one of the words, the site initiates a search of its database for the best-matching poem and redirects the user to the top result, alongside with the top image from the Flickr API for that word.
+PoemToday (also on [Github](https://github.com/alexpatriquin/poem-today)) is a Rails web app that statistically generates a poem based on its users' profile and behavior. Each of the 6,000 poems on the site actually has a link wrapped around every word in every poem. When a user clicks one of the words, the site initiates a search of its database for the best-matching poem and redirects the user to the top result, alongside with the top image from the Flickr API for that word.
 
 ```ruby
 def save_top_result
@@ -26,6 +26,8 @@ end
 ```
 
 Behind the scenes, PoemToday is storing information about all of the words the user has clicked and the poems the user has visited in a temporary session. When the session has enough data, it statistically generates a completely unique "ephemeral" poem with a statistical process known as a [Markov chain](http://en.wikipedia.org/wiki/Markov_chain).
+
+<!-- more -->
 
 ###simplenlg vs. Markov chains
 
@@ -93,4 +95,4 @@ I also used a Postgres search gem, pg_search, to quickly search through all of t
 
 Finally, I used [Twilio's text-to-speech](http://localhost:4000/twilio-text-to-speech-in-rails-4) feature to read the poems in a fun robot voice. This was actually one of harder parts of the project as it required that I create a virtual [Twilio device](http://localhost:4000/twilio-text-to-speech-in-rails-4) with Javascript on each poem page load and could only test it in production or with ultra-slow ngrok, which exposed my local web server to the internet.
 
-PoemToday was definitely my most ambitious technical project to date. Judging from the fascinated reactions of a few dozen people at the Flatiron School Science Fair, I'd say it was a success so far and I look forward to continuing to build it.
+PoemToday was one of my most technically ambitions project to date. Judging from the fascinated reactions of a few dozen beta users, I'd say PoemToday is on a path to success and I look forward to continuing to build it.
