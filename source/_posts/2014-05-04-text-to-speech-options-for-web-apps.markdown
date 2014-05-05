@@ -9,7 +9,9 @@ categories: [NLP]
 
 While I was building [PoemToday](/how-i-built-poemtoday), I wanted to add a feature that enabled users to play any poem aloud in a robot voice. If the inspiration for PoemToday, [The Writer's Almanac](http://writersalmanac.publicradio.org/), had Garrison Keillor’s voice coming over the NPR radio waves every morning, then my app would have the voice not of a killer robot, but a Keillorbot.
 
-This proved to be easier said than done. First, there was a dearth of good quality options for text-to-speech that fit right into Rails. Second, with the Twilio implementation I chose to make, there were a few configuration steps between Twilio and Rails that were neither obvious nor well documented.
+This proved to be easier said than done. First, there was a dearth of good quality options for text-to-speech that fit right into Rails. Second, with the Twilio implementation I chose to make, there were a few configuration steps between Twilio and Rails that were neither obvious nor well documented. You can read more about the steps I took to implemet Twilio [here](/twilio-text-to-speech-in-rails-4).
+
+###TTS Options for Web Apps
 
 Currently there’s a dearth of good quality text-to-speech options for web apps. I can’t really speak to mobile and desktop apps, but I believe those those platforms offer native TTS capabilities which developers can hook into. 
 
