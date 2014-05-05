@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Bitcoin | SquareCraft]]></title>
+  <link href="http://alexpatriquin.github.io/blog/categories/bitcoin/atom.xml" rel="self"/>
+  <link href="http://alexpatriquin.github.io/"/>
+  <updated>2014-05-04T20:04:08-04:00</updated>
+  <id>http://alexpatriquin.github.io/</id>
+  <author>
+    <name><![CDATA[Alex Patriquin]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Introducing Tender]]></title>
+    <link href="http://alexpatriquin.github.iointroducing-tender"/>
+    <updated>2014-04-27T17:49:57-04:00</updated>
+    <id>http://alexpatriquin.github.io./introducing-tender</id>
+    <content type="html"><![CDATA[<p><a href="http://www.tendermessenger.com/">Tender</a> is a social payments app (think <a href="https://venmo.com/">Venmo</a>) for Bitcoin. Users can send or receive any amount of Bitcoin, including extremely small amounts which can be used to validated the identity of counter-parties.</p>
+
+<p><a href="http://www.tendermessenger.com/"><img class="center" src="../images/post_images/tender-screenshot.png" width="500"></a></p>
+
+<p>I built Tender (also on <a href="https://github.com/alexpatriquin/BitcoinMessenger">Github</a>) with <a href="https://twitter.com/CKohlbrenner">Chris Kohlbrenner</a>. I came up with the initial idea for the project as a Bitcoin dating site&hellip; hence the triple-play on words with the name &ldquo;Tender&rdquo;. However, Chris and I decided to generalize the app and make it usable (or at least instructive) for other open source projects as a general social messaging utility.</p>
+
+<h3>Why Bitcoin Messaging?</h3>
+
+<p>Bitcoin gets a lot of hype these days, but after working with the cryptocurrency a bit, I really do see its potential to transform online payments and much more. For example, a messaging system can require a very small amount of Bitcoin get sent with each message as a way to prevent or at least deter bulk volume spammers. After practicing our web development skills, our main purpose in building Tender was to demonstrate this anti-spam concept.</p>
+
+<p>We used Ruby on Rails as the framework and built the Bitcoin transactions features with the Coinbase API and the messaging functionality with a gem called Mailboxer. In the process of weaving those two features together, we learned a lot about them. Payments and messaging share the concept of &ldquo;credits&rdquo; and &ldquo;debits&rdquo; to a balance or mailbox. Kind of like double-ledger accounting, we had to do a credit and a debit whenever a user sent money and a message to another user, and vice-versa. You can see that code play out in code below.</p>
+
+<p>```ruby Tender Send-Request Bitcoin <a href="https://github.com/alexpatriquin/BitcoinMessenger/blob/master/app/controllers/conversations_controller.rb">https://github.com/alexpatriquin/BitcoinMessenger/blob/master/app/controllers/conversations_controller.rb</a> source
+def send_message_and_bitcoin
+  current_user.send_message(@recipient, @message, &lsquo;You\&rsquo;ve got Bitcoin.&rsquo;)
+  current_user.send_bitcoin(@recipient, @amount)
+  @message.update(@amount, params[:send_or_request], @recipient.id)
+  redirect_to @current_page, notice: &ldquo;Sent #{@amount} to #{@recipient.email}.&rdquo;
+  debit_balance(@amount)
+  credit_balance(@recipient, @amount)
+end</p>
+
+<p>def send_message_and_request_bitcoin
+  current_user.send_message(@recipient, @message, &lsquo;You\&rsquo;ve got Bitcoin.&rsquo;)
+  current_user.request_bitcoin(@recipient, @amount, @message)
+  @message.update(@amount, params[:send_or_request], @recipient.id)
+  redirect_to @current_page, notice: &ldquo;Sent request for #{@amount} to #{@recipient.email}.&rdquo;
+end
+```</p>
+
+<h3>Coinbase and Typeahead.js</h3>
+
+<p>To build Tender, we used Devise and Omniauth to authenticate users, enable them to sign in via Coinbase and to validate their balances on Coinbase. The app features a lot of validations and notices to users to confirm that their transactions go through when they should and shows descriptive alerts when they shouldn&rsquo;t, such as when the user has insufficient Bitcoin balance.</p>
+
+<p>We also made it easy for users to find each other by implementing an autosuggest user search feature with Twitter&rsquo;s Typeahead.js, and brought the user objects to the views with the gon gem. Finally, Tender features a robust testing suite with Rspec and Capybara, at 92% code coverage.</p>
+
+<p>This was a very interesting project on many levels, from working with a new payment type like Bitcoin, to getting deep into the mechanics of messaging. I also learned quite a bit about implementing complex Javascript features in Rails.</p>
+]]></content>
+  </entry>
+  
+</feed>

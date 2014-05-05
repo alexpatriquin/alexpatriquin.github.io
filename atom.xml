@@ -4,7 +4,7 @@
   <title><![CDATA[SquareCraft]]></title>
   <link href="http://alexpatriquin.github.io/atom.xml" rel="self"/>
   <link href="http://alexpatriquin.github.io/"/>
-  <updated>2014-05-04T19:38:10-04:00</updated>
+  <updated>2014-05-04T20:04:08-04:00</updated>
   <id>http://alexpatriquin.github.io/</id>
   <author>
     <name><![CDATA[Alex Patriquin]]></name>
@@ -257,7 +257,7 @@
     <link href="http://alexpatriquin.github.iotext-to-speech-options-for-web-apps"/>
     <updated>2014-05-04T13:07:46-04:00</updated>
     <id>http://alexpatriquin.github.io./text-to-speech-options-for-web-apps</id>
-    <content type="html"><![CDATA[<p>While I was building <a href="http://www.poemtoday.com/">PoemToday</a>, I wanted to add a feature that enabled users to play any poem aloud in a robot voice. If the inspiration for PoemToday, <a href="http://writersalmanac.publicradio.org/">The Writer&rsquo;s Almanac</a>, had Garrison Keillor’s voice coming over the NPR radio waves every morning, then my app would have the voice not of a killer robot, but a Keillorbot.</p>
+    <content type="html"><![CDATA[<p>While I was building <a href="http://alexpatriquin.github.io/how-i-built-poemtoday">PoemToday</a>, I wanted to add a feature that enabled users to play any poem aloud in a robot voice. If the inspiration for PoemToday, <a href="http://writersalmanac.publicradio.org/">The Writer&rsquo;s Almanac</a>, had Garrison Keillor’s voice coming over the NPR radio waves every morning, then my app would have the voice not of a killer robot, but a Keillorbot.</p>
 
 <p>This proved to be easier said than done. First, there was a dearth of good quality options for text-to-speech that fit right into Rails. Second, with the Twilio implementation I chose to make, there were a few configuration steps between Twilio and Rails that were neither obvious nor well documented.</p>
 
@@ -277,14 +277,14 @@
   
   <entry>
     <title type="html"><![CDATA[How I Built PoemToday]]></title>
-    <link href="http://alexpatriquin.github.iohow-i-built-poemtoday/"/>
+    <link href="http://alexpatriquin.github.iohow-i-built-poemtoday"/>
     <updated>2014-04-28T18:49:57-04:00</updated>
     <id>http://alexpatriquin.github.io./how-i-built-poemtoday</id>
-    <content type="html"><![CDATA[<p>I graduated from the <a href="http://flatironschool.com/">Flatiron School</a> last week and, after an exhilarating three months, had the chance to present my final projects at our Science Fair. Along with <a href="http://tendermessenger.com/">Tender</a>, I presented PoemToday, a random poem generator that&rsquo;s powered by user behavior. Here is the story of how it works and how I made it.</p>
+    <content type="html"><![CDATA[<p>Today I&rsquo;m introducing <a href="http://www.poemtoday.com/">PoemToday</a>, a random poem generator that&rsquo;s powered by user behavior. Here is the story of how it works and how I made it.</p>
 
 <p><a href="http://www.poemtoday.com/poems/3568?keyword=plato"><img class="center" src="../images/post_images/stats-poem.png" width="500"></a></p>
 
-<p><a href="http://www.poemtoday.com/">PoemToday</a> (also on <a href="https://github.com/alexpatriquin/poem-today">Github</a>) is a Rails web app that statistically generates a poem based on its users&#8217; profile and behavior. Each of the 6,000 poems on the site actually has a link wrapped around every word in every poem. When a user clicks one of the words, the site initiates a search of its database for the best-matching poem and redirects the user to the top result, alongside with the top image from the Flickr API for that word.</p>
+<p>PoemToday (also on <a href="https://github.com/alexpatriquin/poem-today">Github</a>) is a Rails web app that statistically generates a poem based on its users&#8217; profile and behavior. Each of the 6,000 poems on the site actually has a link wrapped around every word in every poem. When a user clicks one of the words, the site initiates a search of its database for the best-matching poem and redirects the user to the top result, alongside with the top image from the Flickr API for that word.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -308,6 +308,9 @@
 
 
 <p>Behind the scenes, PoemToday is storing information about all of the words the user has clicked and the poems the user has visited in a temporary session. When the session has enough data, it statistically generates a completely unique &ldquo;ephemeral&rdquo; poem with a statistical process known as a <a href="http://en.wikipedia.org/wiki/Markov_chain">Markov chain</a>.</p>
+
+<!-- more -->
+
 
 <h3>simplenlg vs. Markov chains</h3>
 
@@ -409,7 +412,67 @@
 
 <p>Finally, I used <a href="http://localhost:4000/twilio-text-to-speech-in-rails-4">Twilio&rsquo;s text-to-speech</a> feature to read the poems in a fun robot voice. This was actually one of harder parts of the project as it required that I create a virtual <a href="http://localhost:4000/twilio-text-to-speech-in-rails-4">Twilio device</a> with Javascript on each poem page load and could only test it in production or with ultra-slow ngrok, which exposed my local web server to the internet.</p>
 
-<p>PoemToday was definitely my most ambitious technical project to date. Judging from the fascinated reactions of a few dozen people at the Flatiron School Science Fair, I&rsquo;d say it was a success so far and I look forward to continuing to build it.</p>
+<p>PoemToday was one of my most technically ambitions project to date. Judging from the fascinated reactions of a few dozen beta users, I&rsquo;d say PoemToday is on a path to success and I look forward to continuing to build it.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Introducing Tender]]></title>
+    <link href="http://alexpatriquin.github.iointroducing-tender"/>
+    <updated>2014-04-27T17:49:57-04:00</updated>
+    <id>http://alexpatriquin.github.io./introducing-tender</id>
+    <content type="html"><![CDATA[<p><a href="http://www.tendermessenger.com/">Tender</a> is a social payments app (think <a href="https://venmo.com/">Venmo</a>) for Bitcoin. Users can send or receive any amount of Bitcoin, including extremely small amounts which can be used to validated the identity of counter-parties.</p>
+
+<p><a href="http://www.tendermessenger.com/"><img class="center" src="../images/post_images/tender-screenshot.png" width="500"></a></p>
+
+<p>I built Tender (also on <a href="https://github.com/alexpatriquin/BitcoinMessenger">Github</a>) with <a href="https://twitter.com/CKohlbrenner">Chris Kohlbrenner</a>. I came up with the initial idea for the project as a Bitcoin dating site&hellip; hence the triple-play on words with the name &ldquo;Tender&rdquo;. However, Chris and I decided to generalize the app and make it usable (or at least instructive) for other open source projects as a general social messaging utility.</p>
+
+<h3>Why Bitcoin Messaging?</h3>
+
+<p>Bitcoin gets a lot of hype these days, but after working with the cryptocurrency a bit, I really do see its potential to transform online payments and much more. For example, a messaging system can require a very small amount of Bitcoin get sent with each message as a way to prevent or at least deter bulk volume spammers. After practicing our web development skills, our main purpose in building Tender was to demonstrate this anti-spam concept.</p>
+
+<p>We used Ruby on Rails as the framework and built the Bitcoin transactions features with the Coinbase API and the messaging functionality with a gem called Mailboxer. In the process of weaving those two features together, we learned a lot about them. Payments and messaging share the concept of &ldquo;credits&rdquo; and &ldquo;debits&rdquo; to a balance or mailbox. Kind of like double-ledger accounting, we had to do a credit and a debit whenever a user sent money and a message to another user, and vice-versa. You can see that code play out in code below.</p>
+
+<figure class='code'><figcaption><span>Tender Send-Request Bitcoin</span><a href='https://github.com/alexpatriquin/BitcoinMessenger/blob/master/app/controllers/conversations_controller.rb'>source</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">send_message_and_bitcoin</span>
+</span><span class='line'>  <span class="n">current_user</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="vi">@recipient</span><span class="p">,</span> <span class="vi">@message</span><span class="p">,</span> <span class="s1">&#39;You\&#39;ve got Bitcoin.&#39;</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">current_user</span><span class="o">.</span><span class="n">send_bitcoin</span><span class="p">(</span><span class="vi">@recipient</span><span class="p">,</span> <span class="vi">@amount</span><span class="p">)</span>
+</span><span class='line'>  <span class="vi">@message</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="vi">@amount</span><span class="p">,</span> <span class="n">params</span><span class="o">[</span><span class="ss">:send_or_request</span><span class="o">]</span><span class="p">,</span> <span class="vi">@recipient</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">redirect_to</span> <span class="vi">@current_page</span><span class="p">,</span> <span class="ss">notice</span><span class="p">:</span> <span class="s2">&quot;Sent </span><span class="si">#{</span><span class="vi">@amount</span><span class="si">}</span><span class="s2"> to </span><span class="si">#{</span><span class="vi">@recipient</span><span class="o">.</span><span class="n">email</span><span class="si">}</span><span class="s2">.&quot;</span>
+</span><span class='line'>  <span class="n">debit_balance</span><span class="p">(</span><span class="vi">@amount</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">credit_balance</span><span class="p">(</span><span class="vi">@recipient</span><span class="p">,</span> <span class="vi">@amount</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">send_message_and_request_bitcoin</span>
+</span><span class='line'>  <span class="n">current_user</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="vi">@recipient</span><span class="p">,</span> <span class="vi">@message</span><span class="p">,</span> <span class="s1">&#39;You\&#39;ve got Bitcoin.&#39;</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">current_user</span><span class="o">.</span><span class="n">request_bitcoin</span><span class="p">(</span><span class="vi">@recipient</span><span class="p">,</span> <span class="vi">@amount</span><span class="p">,</span> <span class="vi">@message</span><span class="p">)</span>
+</span><span class='line'>  <span class="vi">@message</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="vi">@amount</span><span class="p">,</span> <span class="n">params</span><span class="o">[</span><span class="ss">:send_or_request</span><span class="o">]</span><span class="p">,</span> <span class="vi">@recipient</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">redirect_to</span> <span class="vi">@current_page</span><span class="p">,</span> <span class="ss">notice</span><span class="p">:</span> <span class="s2">&quot;Sent request for </span><span class="si">#{</span><span class="vi">@amount</span><span class="si">}</span><span class="s2"> to </span><span class="si">#{</span><span class="vi">@recipient</span><span class="o">.</span><span class="n">email</span><span class="si">}</span><span class="s2">.&quot;</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Coinbase and Typeahead.js</h3>
+
+<p>To build Tender, we used Devise and Omniauth to authenticate users, enable them to sign in via Coinbase and to validate their balances on Coinbase. The app features a lot of validations and notices to users to confirm that their transactions go through when they should and shows descriptive alerts when they shouldn&rsquo;t, such as when the user has insufficient Bitcoin balance.</p>
+
+<p>We also made it easy for users to find each other by implementing an autosuggest user search feature with Twitter&rsquo;s Typeahead.js, and brought the user objects to the views with the gon gem. Finally, Tender features a robust testing suite with Rspec and Capybara, at 92% code coverage.</p>
+
+<p>This was a very interesting project on many levels, from working with a new payment type like Bitcoin, to getting deep into the mechanics of messaging. I also learned quite a bit about implementing complex Javascript features in Rails.</p>
 ]]></content>
   </entry>
   

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Poetry | SquareCraft]]></title>
+  <link href="http://alexpatriquin.github.io/blog/categories/poetry/atom.xml" rel="self"/>
+  <link href="http://alexpatriquin.github.io/"/>
+  <updated>2014-05-04T20:04:08-04:00</updated>
+  <id>http://alexpatriquin.github.io/</id>
+  <author>
+    <name><![CDATA[Alex Patriquin]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[How I Built PoemToday]]></title>
+    <link href="http://alexpatriquin.github.iohow-i-built-poemtoday"/>
+    <updated>2014-04-28T18:49:57-04:00</updated>
+    <id>http://alexpatriquin.github.io./how-i-built-poemtoday</id>
+    <content type="html"><![CDATA[<p>Today I&rsquo;m introducing <a href="http://www.poemtoday.com/">PoemToday</a>, a random poem generator that&rsquo;s powered by user behavior. Here is the story of how it works and how I made it.</p>
+
+<p><a href="http://www.poemtoday.com/poems/3568?keyword=plato"><img class="center" src="../images/post_images/stats-poem.png" width="500"></a></p>
+
+<p>PoemToday (also on <a href="https://github.com/alexpatriquin/poem-today">Github</a>) is a Rails web app that statistically generates a poem based on its users' profile and behavior. Each of the 6,000 poems on the site actually has a link wrapped around every word in every poem. When a user clicks one of the words, the site initiates a search of its database for the best-matching poem and redirects the user to the top result, alongside with the top image from the Flickr API for that word.</p>
+
+<p>```ruby
+def save_top_result
+  @poem = @results.inject do |winning,result|
+  winning[:match_score] > result[:match_score] ? winning : result
+  end
+end</p>
+
+<p>def get_image_url(keyword)
+  flickr.photos.search(&ldquo;text&rdquo;=>&ldquo;#{keyword}&rdquo;, &ldquo;sort&rdquo;=> &ldquo;relevance&rdquo;).first
+end
+```</p>
+
+<p>Behind the scenes, PoemToday is storing information about all of the words the user has clicked and the poems the user has visited in a temporary session. When the session has enough data, it statistically generates a completely unique &ldquo;ephemeral&rdquo; poem with a statistical process known as a <a href="http://en.wikipedia.org/wiki/Markov_chain">Markov chain</a>.</p>
+
+<!-- more -->
+
+
+<h3>simplenlg vs. Markov chains</h3>
+
+<p>Initially I tried to implement a linguistics strategy for randomly generating poems. If a user had clicked three nouns, I figured,  how difficult would it be to find a verb and then create a semi-sensical sentence? Using the Wordnik API and a ruleset I could fill in the missing parts of speech.</p>
+
+<p>I spent a while building a Natural Language Generator without realizing that was what I was doing. Then I stumbled on simplenlg, both the <a href="https://code.google.com/p/simplenlg/">Java API</a> and the <a href="https://github.com/efi/simplenlg">ruby gem</a>, which opened up a whole new tangent of linguistic programming to me. I really love language (why else would I make a random poetry app?? ;) and this intersection of code and linguistics was an especially exciting turn in the project.</p>
+
+<p>With user-selected keywords, simplenlg, and the Wordnik API&rsquo;s random words endpoint, which features random word generation by part of speech as well as frequency, I was able to weave together some fairly compelling random poems.</p>
+
+<p>Then I stumbled upon Markov chains in my research, which on the first few tests in the command line quickly proved much more compelling than my patchwork NLG solution. The Markov chains were uncanny and required users click far fewer keywords to produce better sounding random poetry. It was a much lower bar to &ldquo;minimum emotional product&rdquo;.</p>
+
+<p><code>ruby
+def create_ephemeral_poem
+  @poem_title = session[:ephemeral_poem].values[-4..-1].join(' ')
+  @poem_body &lt;&lt; markov.generate_5_sentences
+  @poet = "You"
+end
+</code></p>
+
+<p>The most fascinating aspect of Markov chains to me is that they know nothing about parts of speech or linguistics. They are just pure mathematics. And yet they sound so human.</p>
+
+<p>I implemented the Markov chain with the <a href="https://github.com/zolrath/marky_markov">Marky Markov gem</a>, though I will do my own <a href="https://gist.github.com/alexpatriquin/11226396">implementation in ruby</a> soon.</p>
+
+<h3>Matching Algorithm</h3>
+
+<p>PoemToday also features a daily email option. The app will email you a poem every morning, along with information about why that poem was matched to you on that day.</p>
+
+<p>The app connects to APIs from Twitter, The New York Times and Forecast.io for user profile data sources. The app also uses the Wordnik API to score keywords on frequency from each data source. The Wordnik API goes back to 1800, but I limited it to 2000 for contemporary word usage.</p>
+
+<p>I treated keyword frequency like golf scores &ndash; the lower, the better, so that rare words percolate to the top of poem matches and users' inboxes. You can get a good sense of how the user-to-poem daily matching algorithm works from this Gist.</p>
+
+<p>```ruby Keyword-Poem Match Scoring <a href="https://github.com/alexpatriquin/poem-today/blob/master/app/models/poem_scorer.rb">https://github.com/alexpatriquin/poem-today/blob/master/app/models/poem_scorer.rb</a> source
+  def score_by_keyword_source(result)</p>
+
+<pre><code>case result[:keyword_source]
+when :twitter
+  result[:match_score] += 40
+when :news
+  result[:match_score] += 30
+when :forecast
+  result[:match_score] += 20
+end
+</code></pre>
+
+<p>  end</p>
+
+<p>  def score_by_match_type(result)</p>
+
+<pre><code>case result[:match_type]
+when :occasion || :subject || :poet
+  result[:match_score] += 100
+when :title
+  result[:match_score] += 50
+when :first_line
+  result[:match_score] += 30  
+when :content
+  result[:match_score] += 10
+end
+</code></pre>
+
+<p>  end</p>
+
+<p>  def score_by_frequency(result)</p>
+
+<pre><code>#birthdays, name days and holidays have 0 freq =&gt; 100 points
+frequency_score = (1000 - result[:keyword_frequency]) / 10
+result[:match_score] += frequency_score
+</code></pre>
+
+<p>  end
+```</p>
+
+<p>I also used a Postgres search gem, pg_search, to quickly search through all of the poems and their content. This was a lightweight option versus implementing a platform such as Solr or EC2.</p>
+
+<p>Finally, I used <a href="http://localhost:4000/twilio-text-to-speech-in-rails-4">Twilio&rsquo;s text-to-speech</a> feature to read the poems in a fun robot voice. This was actually one of harder parts of the project as it required that I create a virtual <a href="http://localhost:4000/twilio-text-to-speech-in-rails-4">Twilio device</a> with Javascript on each poem page load and could only test it in production or with ultra-slow ngrok, which exposed my local web server to the internet.</p>
+
+<p>PoemToday was one of my most technically ambitions project to date. Judging from the fascinated reactions of a few dozen beta users, I&rsquo;d say PoemToday is on a path to success and I look forward to continuing to build it.</p>
+]]></content>
+  </entry>
+  
+</feed>

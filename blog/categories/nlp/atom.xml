@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Tutorials | SquareCraft]]></title>
-  <link href="http://alexpatriquin.github.io/blog/categories/tutorials/atom.xml" rel="self"/>
+  <title><![CDATA[Category: NLP | SquareCraft]]></title>
+  <link href="http://alexpatriquin.github.io/blog/categories/nlp/atom.xml" rel="self"/>
   <link href="http://alexpatriquin.github.io/"/>
   <updated>2014-05-04T20:04:08-04:00</updated>
   <id>http://alexpatriquin.github.io/</id>
@@ -216,6 +216,136 @@ $(document).ready(function() {
 <p>That’s it! If you’ve completed all the steps above, you should be good to go with adding text-to-speech to your Rails 4 app.</p>
 
 <p>If you run into any trouble or have any questions, feel free to ask me for help in the comments below or <a href="https://twitter.com/apatriq">message me on Twitter</a>.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Text-To-Speech Options for Web Apps]]></title>
+    <link href="http://alexpatriquin.github.iotext-to-speech-options-for-web-apps"/>
+    <updated>2014-05-04T13:07:46-04:00</updated>
+    <id>http://alexpatriquin.github.io./text-to-speech-options-for-web-apps</id>
+    <content type="html"><![CDATA[<p>While I was building <a href="/how-i-built-poemtoday">PoemToday</a>, I wanted to add a feature that enabled users to play any poem aloud in a robot voice. If the inspiration for PoemToday, <a href="http://writersalmanac.publicradio.org/">The Writer&rsquo;s Almanac</a>, had Garrison Keillor’s voice coming over the NPR radio waves every morning, then my app would have the voice not of a killer robot, but a Keillorbot.</p>
+
+<p>This proved to be easier said than done. First, there was a dearth of good quality options for text-to-speech that fit right into Rails. Second, with the Twilio implementation I chose to make, there were a few configuration steps between Twilio and Rails that were neither obvious nor well documented.</p>
+
+<p>Currently there’s a dearth of good quality text-to-speech options for web apps. I can’t really speak to mobile and desktop apps, but I believe those those platforms offer native TTS capabilities which developers can hook into.</p>
+
+<p>Some web app options, like AT&amp;T, were paid services that seemed to actually require more of an integration hurdle and impose all kinds of usage restrictions. Others like the <a href="https://github.com/c2h2/tts">tts</a> gem relied on a Google Translate hack which limited the spoken text to only 100 characters, about a sentence. A haiku might fit under that limit, but not a medium-length or longer poem. I also reached out to <a href="https://wit.ai/">Wit.ai</a>, but they said they don’t offer TTS yet.</p>
+
+<p>The better options were <a href="https://www.twilio.com/docs/howto/twilio-client-text-to-speech">Twilio</a> and <a href="http://tts-api.com/">tts-api.com</a>. Twilio makes text-to-speech available through Twilio.Device, an API object that effectively turns your users’ browser into a phone or “soft device”. Meanwhile tts-api.com is just a one-page website with a single textarea on a form that returns an mp3 audio file when submitted. Nice and simple!</p>
+
+<p>Even though it was probably the best option in terms of performance, I didn’t want to download and store 6,000 mp3 files from tts-api.com, one for each poem, and rack up hosting fees. I could’ve also had the mp3 file from tts-api.com pop up in a new window, but I dislike pop ups (they’re terrible user experience) so I went with Twilio.</p>
+
+<p>Also, while researching this post, I found the <a href="https://github.com/dejan/espeak-ruby">espeak-ruby</a> gem, which I’ll haven’t tried out&hellip; I’ll have to come back soon and post an update. In the meantime, I’m glad I got a chance to figure out the Twilio implementation as I learned a lot.</p>
+
+<p>See the steps I took to implement <a href="/twilio-text-to-speech-in-rails-4">Twilio text-to-speech in Rails 4</a>.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[How I Built PoemToday]]></title>
+    <link href="http://alexpatriquin.github.iohow-i-built-poemtoday"/>
+    <updated>2014-04-28T18:49:57-04:00</updated>
+    <id>http://alexpatriquin.github.io./how-i-built-poemtoday</id>
+    <content type="html"><![CDATA[<p>Today I&rsquo;m introducing <a href="http://www.poemtoday.com/">PoemToday</a>, a random poem generator that&rsquo;s powered by user behavior. Here is the story of how it works and how I made it.</p>
+
+<p><a href="http://www.poemtoday.com/poems/3568?keyword=plato"><img class="center" src="../images/post_images/stats-poem.png" width="500"></a></p>
+
+<p>PoemToday (also on <a href="https://github.com/alexpatriquin/poem-today">Github</a>) is a Rails web app that statistically generates a poem based on its users' profile and behavior. Each of the 6,000 poems on the site actually has a link wrapped around every word in every poem. When a user clicks one of the words, the site initiates a search of its database for the best-matching poem and redirects the user to the top result, alongside with the top image from the Flickr API for that word.</p>
+
+<p>```ruby
+def save_top_result
+  @poem = @results.inject do |winning,result|
+  winning[:match_score] > result[:match_score] ? winning : result
+  end
+end</p>
+
+<p>def get_image_url(keyword)
+  flickr.photos.search(&ldquo;text&rdquo;=>&ldquo;#{keyword}&rdquo;, &ldquo;sort&rdquo;=> &ldquo;relevance&rdquo;).first
+end
+```</p>
+
+<p>Behind the scenes, PoemToday is storing information about all of the words the user has clicked and the poems the user has visited in a temporary session. When the session has enough data, it statistically generates a completely unique &ldquo;ephemeral&rdquo; poem with a statistical process known as a <a href="http://en.wikipedia.org/wiki/Markov_chain">Markov chain</a>.</p>
+
+<!-- more -->
+
+
+<h3>simplenlg vs. Markov chains</h3>
+
+<p>Initially I tried to implement a linguistics strategy for randomly generating poems. If a user had clicked three nouns, I figured,  how difficult would it be to find a verb and then create a semi-sensical sentence? Using the Wordnik API and a ruleset I could fill in the missing parts of speech.</p>
+
+<p>I spent a while building a Natural Language Generator without realizing that was what I was doing. Then I stumbled on simplenlg, both the <a href="https://code.google.com/p/simplenlg/">Java API</a> and the <a href="https://github.com/efi/simplenlg">ruby gem</a>, which opened up a whole new tangent of linguistic programming to me. I really love language (why else would I make a random poetry app?? ;) and this intersection of code and linguistics was an especially exciting turn in the project.</p>
+
+<p>With user-selected keywords, simplenlg, and the Wordnik API&rsquo;s random words endpoint, which features random word generation by part of speech as well as frequency, I was able to weave together some fairly compelling random poems.</p>
+
+<p>Then I stumbled upon Markov chains in my research, which on the first few tests in the command line quickly proved much more compelling than my patchwork NLG solution. The Markov chains were uncanny and required users click far fewer keywords to produce better sounding random poetry. It was a much lower bar to &ldquo;minimum emotional product&rdquo;.</p>
+
+<p><code>ruby
+def create_ephemeral_poem
+  @poem_title = session[:ephemeral_poem].values[-4..-1].join(' ')
+  @poem_body &lt;&lt; markov.generate_5_sentences
+  @poet = "You"
+end
+</code></p>
+
+<p>The most fascinating aspect of Markov chains to me is that they know nothing about parts of speech or linguistics. They are just pure mathematics. And yet they sound so human.</p>
+
+<p>I implemented the Markov chain with the <a href="https://github.com/zolrath/marky_markov">Marky Markov gem</a>, though I will do my own <a href="https://gist.github.com/alexpatriquin/11226396">implementation in ruby</a> soon.</p>
+
+<h3>Matching Algorithm</h3>
+
+<p>PoemToday also features a daily email option. The app will email you a poem every morning, along with information about why that poem was matched to you on that day.</p>
+
+<p>The app connects to APIs from Twitter, The New York Times and Forecast.io for user profile data sources. The app also uses the Wordnik API to score keywords on frequency from each data source. The Wordnik API goes back to 1800, but I limited it to 2000 for contemporary word usage.</p>
+
+<p>I treated keyword frequency like golf scores &ndash; the lower, the better, so that rare words percolate to the top of poem matches and users' inboxes. You can get a good sense of how the user-to-poem daily matching algorithm works from this Gist.</p>
+
+<p>```ruby Keyword-Poem Match Scoring <a href="https://github.com/alexpatriquin/poem-today/blob/master/app/models/poem_scorer.rb">https://github.com/alexpatriquin/poem-today/blob/master/app/models/poem_scorer.rb</a> source
+  def score_by_keyword_source(result)</p>
+
+<pre><code>case result[:keyword_source]
+when :twitter
+  result[:match_score] += 40
+when :news
+  result[:match_score] += 30
+when :forecast
+  result[:match_score] += 20
+end
+</code></pre>
+
+<p>  end</p>
+
+<p>  def score_by_match_type(result)</p>
+
+<pre><code>case result[:match_type]
+when :occasion || :subject || :poet
+  result[:match_score] += 100
+when :title
+  result[:match_score] += 50
+when :first_line
+  result[:match_score] += 30  
+when :content
+  result[:match_score] += 10
+end
+</code></pre>
+
+<p>  end</p>
+
+<p>  def score_by_frequency(result)</p>
+
+<pre><code>#birthdays, name days and holidays have 0 freq =&gt; 100 points
+frequency_score = (1000 - result[:keyword_frequency]) / 10
+result[:match_score] += frequency_score
+</code></pre>
+
+<p>  end
+```</p>
+
+<p>I also used a Postgres search gem, pg_search, to quickly search through all of the poems and their content. This was a lightweight option versus implementing a platform such as Solr or EC2.</p>
+
+<p>Finally, I used <a href="http://localhost:4000/twilio-text-to-speech-in-rails-4">Twilio&rsquo;s text-to-speech</a> feature to read the poems in a fun robot voice. This was actually one of harder parts of the project as it required that I create a virtual <a href="http://localhost:4000/twilio-text-to-speech-in-rails-4">Twilio device</a> with Javascript on each poem page load and could only test it in production or with ultra-slow ngrok, which exposed my local web server to the internet.</p>
+
+<p>PoemToday was one of my most technically ambitions project to date. Judging from the fascinated reactions of a few dozen beta users, I&rsquo;d say PoemToday is on a path to success and I look forward to continuing to build it.</p>
 ]]></content>
   </entry>
   

@@ -9,7 +9,7 @@
   <meta name="author" content="Alex Patriquin">
 
   
-  <meta name="description" content="I graduated from the Flatiron School last week and, after an exhilarating three months, had the chance to present my final projects at our Science &hellip;">
+  <meta name="description" content="Today I&rsquo;m introducing PoemToday, a random poem generator that&rsquo;s powered by user behavior. Here is the story of how it works and how I &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://alexpatriquin.github.iohow-i-built-poemtoday/">
+  <link rel="canonical" href="http://alexpatriquin.github.iohow-i-built-poemtoday">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -105,11 +105,11 @@
   </header>
 
 
-<div class="entry-content"><p>I graduated from the <a href="http://flatironschool.com/">Flatiron School</a> last week and, after an exhilarating three months, had the chance to present my final projects at our Science Fair. Along with <a href="http://tendermessenger.com/">Tender</a>, I presented PoemToday, a random poem generator that&rsquo;s powered by user behavior. Here is the story of how it works and how I made it.</p>
+<div class="entry-content"><p>Today I&rsquo;m introducing <a href="http://www.poemtoday.com/">PoemToday</a>, a random poem generator that&rsquo;s powered by user behavior. Here is the story of how it works and how I made it.</p>
 
 <p><a href="http://www.poemtoday.com/poems/3568?keyword=plato"><img class="center" src="../images/post_images/stats-poem.png" width="500"></a></p>
 
-<p><a href="http://www.poemtoday.com/">PoemToday</a> (also on <a href="https://github.com/alexpatriquin/poem-today">Github</a>) is a Rails web app that statistically generates a poem based on its users&#8217; profile and behavior. Each of the 6,000 poems on the site actually has a link wrapped around every word in every poem. When a user clicks one of the words, the site initiates a search of its database for the best-matching poem and redirects the user to the top result, alongside with the top image from the Flickr API for that word.</p>
+<p>PoemToday (also on <a href="https://github.com/alexpatriquin/poem-today">Github</a>) is a Rails web app that statistically generates a poem based on its users&#8217; profile and behavior. Each of the 6,000 poems on the site actually has a link wrapped around every word in every poem. When a user clicks one of the words, the site initiates a search of its database for the best-matching poem and redirects the user to the top result, alongside with the top image from the Flickr API for that word.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -133,6 +133,9 @@
 
 
 <p>Behind the scenes, PoemToday is storing information about all of the words the user has clicked and the poems the user has visited in a temporary session. When the session has enough data, it statistically generates a completely unique &ldquo;ephemeral&rdquo; poem with a statistical process known as a <a href="http://en.wikipedia.org/wiki/Markov_chain">Markov chain</a>.</p>
+
+<!-- more -->
+
 
 <h3>simplenlg vs. Markov chains</h3>
 
@@ -234,7 +237,7 @@
 
 <p>Finally, I used <a href="http://localhost:4000/twilio-text-to-speech-in-rails-4">Twilio&rsquo;s text-to-speech</a> feature to read the poems in a fun robot voice. This was actually one of harder parts of the project as it required that I create a virtual <a href="http://localhost:4000/twilio-text-to-speech-in-rails-4">Twilio device</a> with Javascript on each poem page load and could only test it in production or with ultra-slow ngrok, which exposed my local web server to the internet.</p>
 
-<p>PoemToday was definitely my most ambitious technical project to date. Judging from the fascinated reactions of a few dozen people at the Flatiron School Science Fair, I&rsquo;d say it was a success so far and I look forward to continuing to build it.</p>
+<p>PoemToday was one of my most technically ambitions project to date. Judging from the fascinated reactions of a few dozen beta users, I&rsquo;d say PoemToday is on a path to success and I look forward to continuing to build it.</p>
 </div>
 
 
@@ -260,6 +263,12 @@
 <time datetime="2014-04-28T18:49:57-04:00" pubdate data-updated="true">Apr 28<span>th</span>, 2014</time>
       
 
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/nlp/'>NLP</a>, <a class='category' href='/blog/categories/poetry/'>Poetry</a>, <a class='category' href='/blog/categories/projects/'>Projects</a>, <a class='category' href='/blog/categories/rails-4/'>Rails 4</a>
+  
+</span>
+
 
     </p>
     
@@ -271,6 +280,8 @@
 
     
     <p class="meta">
+      
+        <a class="basic-alignment left" href="introducing-tender" title="Previous Post: Introducing Tender">&laquo; Introducing Tender</a>
       
       
         <a class="basic-alignment right" href="text-to-speech-options-for-web-apps" title="Next Post: Text-To-Speech Options for Web Apps">Text-To-Speech Options for Web Apps &raquo;</a>
@@ -296,7 +307,11 @@
       </li>
     
       <li class="post">
-        <a href="how-i-built-poemtoday/">How I Built PoemToday</a>
+        <a href="how-i-built-poemtoday">How I Built PoemToday</a>
+      </li>
+    
+      <li class="post">
+        <a href="introducing-tender">Introducing Tender</a>
       </li>
     
   </ul>
