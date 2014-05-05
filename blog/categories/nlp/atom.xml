@@ -4,7 +4,7 @@
   <title><![CDATA[Category: NLP | SquareCraft]]></title>
   <link href="http://alexpatriquin.github.io/blog/categories/nlp/atom.xml" rel="self"/>
   <link href="http://alexpatriquin.github.io/"/>
-  <updated>2014-05-05T09:53:58-04:00</updated>
+  <updated>2014-05-05T09:55:17-04:00</updated>
   <id>http://alexpatriquin.github.io/</id>
   <author>
     <name><![CDATA[Alex Patriquin]]></name>
@@ -154,7 +154,7 @@ end
 
 <p>As we saw above in PoemsController, our Twilio Response Object accepts the text to be spoken as params, which we can send via form submission. We can use the HTML <code>data</code> attribute tag to pass the <code>@token</code> to javascript.</p>
 
-<p><a href="http://www.poemtoday.com/poems/5706?keyword=voice"><img class="center" src="./images/post_images/voice-icon.png" width="300"></a></p>
+<p><a href="http://www.poemtoday.com/poems/5706?keyword=voice"><img class="center" src="../images/post_images/voice-icon.png" width="300"></a></p>
 
 <p>PoemToday actually uses a hidden form and the <code>volume-up</code> icon from <a href="http://fortawesome.github.io/">Font Awesome</a> for a submit button.</p>
 
