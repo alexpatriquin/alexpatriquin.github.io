@@ -4,7 +4,7 @@
   <title><![CDATA[Category: NLP | SquareCraft]]></title>
   <link href="http://alexpatriquin.github.io/blog/categories/nlp/atom.xml" rel="self"/>
   <link href="http://alexpatriquin.github.io/"/>
-  <updated>2014-05-04T21:11:37-04:00</updated>
+  <updated>2014-05-04T21:12:42-04:00</updated>
   <id>http://alexpatriquin.github.io/</id>
   <author>
     <name><![CDATA[Alex Patriquin]]></name>
@@ -221,9 +221,9 @@ $(document).ready(function() {
   
   <entry>
     <title type="html"><![CDATA[Text-To-Speech Options for Web Apps]]></title>
-    <link href="http://alexpatriquin.github.iotext-to-speech-options-for-web-apps"/>
+    <link href="http://alexpatriquin.github.io/text-to-speech-options-for-web-apps"/>
     <updated>2014-05-04T13:07:46-04:00</updated>
-    <id>http://alexpatriquin.github.io./text-to-speech-options-for-web-apps</id>
+    <id>http://alexpatriquin.github.io/text-to-speech-options-for-web-apps</id>
     <content type="html"><![CDATA[<p>While I was building <a href="/how-i-built-poemtoday">PoemToday</a>, I wanted to add a feature that enabled users to play any poem aloud in a robot voice. If the inspiration for PoemToday, <a href="http://writersalmanac.publicradio.org/">The Writer&rsquo;s Almanac</a>, had Garrison Keillor’s voice coming over the NPR radio waves every morning, then my app would have the voice not of a killer robot, but a Keillorbot.</p>
 
 <p>This proved to be easier said than done. First, there was a dearth of good quality options for text-to-speech that fit right into Rails. Second, with the Twilio implementation I chose to make, there were a few configuration steps between Twilio and Rails that were neither obvious nor well documented.</p>
@@ -244,9 +244,9 @@ $(document).ready(function() {
   
   <entry>
     <title type="html"><![CDATA[How I Built PoemToday]]></title>
-    <link href="http://alexpatriquin.github.iohow-i-built-poemtoday"/>
+    <link href="http://alexpatriquin.github.io/how-i-built-poemtoday"/>
     <updated>2014-04-28T18:49:57-04:00</updated>
-    <id>http://alexpatriquin.github.io./how-i-built-poemtoday</id>
+    <id>http://alexpatriquin.github.io/how-i-built-poemtoday</id>
     <content type="html"><![CDATA[<p>Today I&rsquo;m introducing <a href="http://www.poemtoday.com/">PoemToday</a>, a random poem generator that&rsquo;s powered by user behavior. Here is the story of how it works and how I made it.</p>
 
 <p><a href="http://www.poemtoday.com/poems/3568?keyword=plato"><img class="center" src="../images/post_images/stats-poem.png" width="500"></a></p>

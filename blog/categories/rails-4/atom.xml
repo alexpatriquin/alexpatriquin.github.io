@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Rails 4 | SquareCraft]]></title>
   <link href="http://alexpatriquin.github.io/blog/categories/rails-4/atom.xml" rel="self"/>
   <link href="http://alexpatriquin.github.io/"/>
-  <updated>2014-05-04T21:11:37-04:00</updated>
+  <updated>2014-05-04T21:12:42-04:00</updated>
   <id>http://alexpatriquin.github.io/</id>
   <author>
     <name><![CDATA[Alex Patriquin]]></name>
@@ -221,9 +221,9 @@ $(document).ready(function() {
   
   <entry>
     <title type="html"><![CDATA[How I Built PoemToday]]></title>
-    <link href="http://alexpatriquin.github.iohow-i-built-poemtoday"/>
+    <link href="http://alexpatriquin.github.io/how-i-built-poemtoday"/>
     <updated>2014-04-28T18:49:57-04:00</updated>
-    <id>http://alexpatriquin.github.io./how-i-built-poemtoday</id>
+    <id>http://alexpatriquin.github.io/how-i-built-poemtoday</id>
     <content type="html"><![CDATA[<p>Today I&rsquo;m introducing <a href="http://www.poemtoday.com/">PoemToday</a>, a random poem generator that&rsquo;s powered by user behavior. Here is the story of how it works and how I made it.</p>
 
 <p><a href="http://www.poemtoday.com/poems/3568?keyword=plato"><img class="center" src="../images/post_images/stats-poem.png" width="500"></a></p>
@@ -328,9 +328,9 @@ result[:match_score] += frequency_score
   
   <entry>
     <title type="html"><![CDATA[Introducing Tender]]></title>
-    <link href="http://alexpatriquin.github.iointroducing-tender"/>
+    <link href="http://alexpatriquin.github.io/introducing-tender"/>
     <updated>2014-04-27T17:49:57-04:00</updated>
-    <id>http://alexpatriquin.github.io./introducing-tender</id>
+    <id>http://alexpatriquin.github.io/introducing-tender</id>
     <content type="html"><![CDATA[<p><a href="http://www.tendermessenger.com/">Tender</a> is a social payments app (think <a href="https://venmo.com/">Venmo</a>) for Bitcoin. Users can send or receive any amount of Bitcoin, including extremely small amounts which can be used to validated the identity of counter-parties.</p>
 
 <p><a href="http://www.tendermessenger.com/"><img class="center" src="../images/post_images/tender-screenshot.png" width="500"></a></p>
