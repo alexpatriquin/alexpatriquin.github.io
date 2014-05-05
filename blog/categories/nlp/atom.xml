@@ -4,7 +4,7 @@
   <title><![CDATA[Category: NLP | SquareCraft]]></title>
   <link href="http://alexpatriquin.github.io/blog/categories/nlp/atom.xml" rel="self"/>
   <link href="http://alexpatriquin.github.io/"/>
-  <updated>2014-05-05T11:07:13-04:00</updated>
+  <updated>2014-05-05T12:26:33-04:00</updated>
   <id>http://alexpatriquin.github.io/</id>
   <author>
     <name><![CDATA[Alex Patriquin]]></name>
@@ -20,7 +20,7 @@
     <id>http://alexpatriquin.github.io/twilio-text-to-speech-in-rails-4</id>
     <content type="html"><![CDATA[<p>This post walks through the steps I took to set up text-to-speech in a Rails 4 app. To learn about other options for implementing text-to-speech in web apps generally, see <a href="/text-to-speech-options-for-web-apps">Text-To-Speech Options for Web Apps</a>.</p>
 
-<p>Also, the Twilio blog has a tutorial worth reading, <a href="https://www.twilio.com/blog/2014/02/twilio-on-rails-integrating-twilio-with-your-rails-4-app.html">Integrating Twilio With Your Rails 4 App</a>, but it does not cover setting up the crucial <a href="https://www.twilio.com/docs/client/device">Twilio.Device</a> or TTS in Rails 4.</p>
+<p>Also, the Twilio blog has a tutorial worth reading, <a href="https://www.twilio.com/blog/2014/02/twilio-on-rails-integrating-twilio-with-your-rails-4-app.html">Integrating Twilio With Your Rails 4 App</a>, but it does not cover setting up the crucial <a href="https://www.twilio.com/docs/client/device">Twilio.Device</a>, the &ldquo;conduit&rdquo; for TTS and a lot of other Twilio API goodness, in Rails 4.</p>
 
 <p>Before we get started, note that Twilio.Device only works when connected to the internet. So you can’t test Twilio.Device from localhost. Instead, you’ll need to expose your localhost to the internet with a utility called ngrok. (See #9 below.)</p>
 
