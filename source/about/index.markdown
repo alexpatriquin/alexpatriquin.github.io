@@ -15,4 +15,4 @@ My current focus is primarily web development, though with my marketing experien
 
 I have experience building web applications in Ruby on Rails. I strongly believe in Test-Driven Development and like to use Rspec and Capybara. With my marketing and product background, I also know how to design highly usable applications and to position them for rapid growth through data-driven strategy.
 
-I am extremely passionate about building things and, in 2013, I made the transition from working closely with web developers to becoming one myself. I recently graduated from The Flatiron School, an immersive web development training program, and am actively seeking a role as a developer at a startup or tech-driven company that will enable me to continue to grow my technical skill set.
+I am passionate about building things.
