@@ -4,7 +4,7 @@
   <title><![CDATA[SquareCraft]]></title>
   <link href="http://alexpatriquin.github.io/atom.xml" rel="self"/>
   <link href="http://alexpatriquin.github.io/"/>
-  <updated>2014-05-05T08:07:31-04:00</updated>
+  <updated>2014-05-05T08:57:04-04:00</updated>
   <id>http://alexpatriquin.github.io/</id>
   <author>
     <name><![CDATA[Alex Patriquin]]></name>
@@ -444,24 +444,16 @@
 <span class='line-number'>9</span>
 <span class='line-number'>10</span>
 <span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
 </pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">send_message_and_bitcoin</span>
-</span><span class='line'>  <span class="n">current_user</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="vi">@recipient</span><span class="p">,</span> <span class="vi">@message</span><span class="p">,</span> <span class="s1">&#39;You\&#39;ve got Bitcoin.&#39;</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">current_user</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="vi">@recipient</span><span class="p">,</span> <span class="vi">@message</span><span class="o">=</span><span class="s1">&#39;You\&#39;ve got Bitcoin.&#39;</span><span class="p">)</span>
 </span><span class='line'>  <span class="n">current_user</span><span class="o">.</span><span class="n">send_bitcoin</span><span class="p">(</span><span class="vi">@recipient</span><span class="p">,</span> <span class="vi">@amount</span><span class="p">)</span>
-</span><span class='line'>  <span class="vi">@message</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="vi">@amount</span><span class="p">,</span> <span class="n">params</span><span class="o">[</span><span class="ss">:send_or_request</span><span class="o">]</span><span class="p">,</span> <span class="vi">@recipient</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
-</span><span class='line'>  <span class="n">redirect_to</span> <span class="vi">@current_page</span><span class="p">,</span> <span class="ss">notice</span><span class="p">:</span> <span class="s2">&quot;Sent </span><span class="si">#{</span><span class="vi">@amount</span><span class="si">}</span><span class="s2"> to </span><span class="si">#{</span><span class="vi">@recipient</span><span class="o">.</span><span class="n">email</span><span class="si">}</span><span class="s2">.&quot;</span>
 </span><span class='line'>  <span class="n">debit_balance</span><span class="p">(</span><span class="vi">@amount</span><span class="p">)</span>
 </span><span class='line'>  <span class="n">credit_balance</span><span class="p">(</span><span class="vi">@recipient</span><span class="p">,</span> <span class="vi">@amount</span><span class="p">)</span>
 </span><span class='line'><span class="k">end</span>
 </span><span class='line'>
 </span><span class='line'><span class="k">def</span> <span class="nf">send_message_and_request_bitcoin</span>
-</span><span class='line'>  <span class="n">current_user</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="vi">@recipient</span><span class="p">,</span> <span class="vi">@message</span><span class="p">,</span> <span class="s1">&#39;You\&#39;ve got Bitcoin.&#39;</span><span class="p">)</span>
-</span><span class='line'>  <span class="n">current_user</span><span class="o">.</span><span class="n">request_bitcoin</span><span class="p">(</span><span class="vi">@recipient</span><span class="p">,</span> <span class="vi">@amount</span><span class="p">,</span> <span class="vi">@message</span><span class="p">)</span>
-</span><span class='line'>  <span class="vi">@message</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="vi">@amount</span><span class="p">,</span> <span class="n">params</span><span class="o">[</span><span class="ss">:send_or_request</span><span class="o">]</span><span class="p">,</span> <span class="vi">@recipient</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
-</span><span class='line'>  <span class="n">redirect_to</span> <span class="vi">@current_page</span><span class="p">,</span> <span class="ss">notice</span><span class="p">:</span> <span class="s2">&quot;Sent request for </span><span class="si">#{</span><span class="vi">@amount</span><span class="si">}</span><span class="s2"> to </span><span class="si">#{</span><span class="vi">@recipient</span><span class="o">.</span><span class="n">email</span><span class="si">}</span><span class="s2">.&quot;</span>
+</span><span class='line'>  <span class="n">current_user</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="vi">@recipient</span><span class="p">,</span> <span class="vi">@message</span><span class="o">=</span><span class="s1">&#39;Send Bitcoin please.&#39;</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">current_user</span><span class="o">.</span><span class="n">request_bitcoin</span><span class="p">(</span><span class="vi">@recipient</span><span class="p">,</span> <span class="vi">@amount</span><span class="p">)</span>
 </span><span class='line'><span class="k">end</span>
 </span></code></pre></td></tr></table></div></figure>
 

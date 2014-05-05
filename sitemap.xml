@@ -2,7 +2,7 @@
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
         <loc>http://alexpatriquin.github.io/introducing-tender</loc>
-        <lastmod>2014-05-04T21:12:21-04:00</lastmod>
+        <lastmod>2014-05-05T08:45:08-04:00</lastmod>
     </url>
     <url>
         <loc>http://alexpatriquin.github.io/how-i-built-poemtoday</loc>
@@ -17,15 +17,23 @@
         <lastmod>2014-05-04T21:10:55-04:00</lastmod>
     </url>
     <url>
+        <loc>http://alexpatriquin.github.io/about/</loc>
+        <lastmod>2014-05-05T08:56:13-04:00</lastmod>
+    </url>
+    <url>
         <loc>http://alexpatriquin.github.io/blog/archives/</loc>
-        <lastmod>2014-05-04T21:12:21-04:00</lastmod>
+        <lastmod>2014-05-05T08:56:13-04:00</lastmod>
     </url>
     <url>
         <loc>http://alexpatriquin.github.io/</loc>
-        <lastmod>2014-05-04T21:12:21-04:00</lastmod>
+        <lastmod>2014-05-05T08:45:08-04:00</lastmod>
     </url>
     <url>
         <loc>http://alexpatriquin.github.io/robots.txt</loc>
         <lastmod>2014-05-03T16:07:49-04:00</lastmod>
+    </url>
+    <url>
+        <loc>http://alexpatriquin.github.io/services/</loc>
+        <lastmod>2014-05-05T08:56:13-04:00</lastmod>
     </url>
 </urlset>

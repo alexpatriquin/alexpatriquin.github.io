@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Projects | SquareCraft]]></title>
   <link href="http://alexpatriquin.github.io/blog/categories/projects/atom.xml" rel="self"/>
   <link href="http://alexpatriquin.github.io/"/>
-  <updated>2014-05-05T08:07:31-04:00</updated>
+  <updated>2014-05-05T08:57:04-04:00</updated>
   <id>http://alexpatriquin.github.io/</id>
   <author>
     <name><![CDATA[Alex Patriquin]]></name>
@@ -139,19 +139,15 @@ result[:match_score] += frequency_score
 
 <p>```ruby Tender Send-Request Bitcoin <a href="https://github.com/alexpatriquin/BitcoinMessenger/blob/master/app/controllers/conversations_controller.rb">https://github.com/alexpatriquin/BitcoinMessenger/blob/master/app/controllers/conversations_controller.rb</a> source
 def send_message_and_bitcoin
-  current_user.send_message(@recipient, @message, &lsquo;You\&rsquo;ve got Bitcoin.&rsquo;)
+  current_user.send_message(@recipient, @message=&lsquo;You\&rsquo;ve got Bitcoin.&rsquo;)
   current_user.send_bitcoin(@recipient, @amount)
-  @message.update(@amount, params[:send_or_request], @recipient.id)
-  redirect_to @current_page, notice: &ldquo;Sent #{@amount} to #{@recipient.email}.&rdquo;
   debit_balance(@amount)
   credit_balance(@recipient, @amount)
 end</p>
 
 <p>def send_message_and_request_bitcoin
-  current_user.send_message(@recipient, @message, &lsquo;You\&rsquo;ve got Bitcoin.&rsquo;)
-  current_user.request_bitcoin(@recipient, @amount, @message)
-  @message.update(@amount, params[:send_or_request], @recipient.id)
-  redirect_to @current_page, notice: &ldquo;Sent request for #{@amount} to #{@recipient.email}.&rdquo;
+  current_user.send_message(@recipient, @message=&lsquo;Send Bitcoin please.&rsquo;)
+  current_user.request_bitcoin(@recipient, @amount)
 end
 ```</p>
 
