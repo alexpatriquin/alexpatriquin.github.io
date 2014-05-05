@@ -123,7 +123,7 @@ Note that we’re creating `@token`, an instance variable on the controller, so 
 
 As we saw above in PoemsController, our Twilio Response Object accepts the text to be spoken as params, which we can send via form submission. We can use the HTML `data` attribute tag to pass the `@token` to javascript. 
 
-[{% img center ./images/post_images/voice-icon.png 300 %}](http://www.poemtoday.com/poems/5706?keyword=voice)
+[{% img center ../images/post_images/voice-icon.png 300 %}](http://www.poemtoday.com/poems/5706?keyword=voice)
 
 PoemToday actually uses a hidden form and the `volume-up` icon from [Font Awesome](http://fortawesome.github.io/) for a submit button.
 

@@ -1,6 +1,6 @@
 ---
 layout: page
-title: "services"
+title: "Services"
 date: 2014-05-05 08:40
 comments: true
 sharing: true
