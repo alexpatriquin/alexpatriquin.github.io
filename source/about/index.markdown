@@ -9,7 +9,7 @@ footer: true
 
 Hello, welcome to my professional site, SquareCraft.co. This is where I [blog](/) about programming, explain the [services](/services) that I offer and post my client and side [projects](/blog/categories/projects/).
 
-In a nutshell, my business is to enable startups and high-potential projects to accelerate their growth and build strong customer relationships. I do this through my somewhat unique background, having both strong marketing and web development experience.
+In a nutshell, my business is to enable startups and high-potential projects to accelerate their growth and build strong customer relationships. I do this through my somewhat unique background, having both marketing and web development experience.
 
 My current focus is primarily web development, though with my marketing experience I do offer a bonus to employers who are interested in that. I'm also very happy to work with an exclusively technical focus.
 
