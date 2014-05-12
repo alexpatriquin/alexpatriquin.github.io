@@ -4,7 +4,7 @@
   <title><![CDATA[Category: NLP | SquareCraft]]></title>
   <link href="http://alexpatriquin.github.io/blog/categories/nlp/atom.xml" rel="self"/>
   <link href="http://alexpatriquin.github.io/"/>
-  <updated>2014-05-12T13:11:13-04:00</updated>
+  <updated>2014-05-12T13:13:50-04:00</updated>
   <id>http://alexpatriquin.github.io/</id>
   <author>
     <name><![CDATA[Alex Patriquin]]></name>
@@ -20,13 +20,11 @@
     <id>http://alexpatriquin.github.io/introducing-stackup</id>
     <content type="html"><![CDATA[<p><a href="http://stackupapp.herokuapp.com/"><img class="center" src="../images/post_images/crowdsurge-serp.png" title="&ldquo;StackupApp&rdquo;" ></a></p>
 
-<h2>Description</h2>
-
 <p><a href="http://stackupapp.herokuapp.com/">StackupApp</a> is AngelList for tech stacks. The app seeks to map out the current technology landscape of the startup ecosystem. The app injests startups from the AngelList API and tags each startup with programming language and tech stack keywords from Indeed job postings.</p>
 
 <p>Currently there at 5,318 New York City-based startups on StackupApp, of which 693 have been tagged.</p>
 
-<h2>Technical Features</h2>
+<h3>Technical Features</h3>
 
 <h5>APIs and OAuth</h5>
 
@@ -40,7 +38,7 @@
 
 <h5>RESTful Routes</h5>
 
-<p>StackupApp is built with Rails, and takes full advantage of the framework&rsquo;s REST conventions. The Unclaim and Deadpool buttons intiate DELETE actions on the <a href="https://github.com/alexpatriquin/stackupapp/blob/master/app/controllers/user_startups_controller.rb">UserStartups</a> and <a href="/app/controllers/startups_controller.rb">Startups</a> controllers, respectively, and can only be access as an authenticated user.</p>
+<p>StackupApp is built with Rails, and takes full advantage of the framework&rsquo;s REST conventions. The Unclaim and Deadpool buttons intiate DELETE actions on the <a href="https://github.com/alexpatriquin/stackupapp/blob/master/app/controllers/user_startups_controller.rb">UserStartups</a> and <a href="https://github.com/alexpatriquin/stackupapp/blob//app/controllers/startups_controller.rb">Startups</a> controllers, respectively, and can only be access as an authenticated user.</p>
 
 <h5>Backgrounds jobs with Sidekiq and Redis</h5>
 
@@ -52,7 +50,7 @@
 
 <p>The app enables users to <code>search_by_name</code> for startups or <code>search_by_tag</code> for tecnologies, which is implemented with the <code>pg_search</code> gem on <a href="https://github.com/alexpatriquin/stackupapp/blob/master/app/models/startup.rb">the Startup model</a>. Only startups that have been tagged are shown in the index and search results, while all startups are searchable by name.</p>
 
-<h2>Continuing Development</h2>
+<h3>Continuing Development</h3>
 
 <p>Continuing development plans include moving the frontend into Ember.js. Also, expanding to SF and Boston.</p>
 ]]></content>
