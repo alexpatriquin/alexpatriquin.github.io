@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Redis | SquareCraft]]></title>
   <link href="http://alexpatriquin.github.io/blog/categories/redis/atom.xml" rel="self"/>
   <link href="http://alexpatriquin.github.io/"/>
-  <updated>2014-05-12T13:13:50-04:00</updated>
+  <updated>2014-05-12T13:15:46-04:00</updated>
   <id>http://alexpatriquin.github.io/</id>
   <author>
     <name><![CDATA[Alex Patriquin]]></name>
@@ -38,7 +38,7 @@
 
 <h5>RESTful Routes</h5>
 
-<p>StackupApp is built with Rails, and takes full advantage of the framework&rsquo;s REST conventions. The Unclaim and Deadpool buttons intiate DELETE actions on the <a href="https://github.com/alexpatriquin/stackupapp/blob/master/app/controllers/user_startups_controller.rb">UserStartups</a> and <a href="https://github.com/alexpatriquin/stackupapp/blob//app/controllers/startups_controller.rb">Startups</a> controllers, respectively, and can only be access as an authenticated user.</p>
+<p>StackupApp is built with Rails, and takes full advantage of the framework&rsquo;s REST conventions. The Unclaim and Deadpool buttons intiate DELETE actions on the <a href="https://github.com/alexpatriquin/stackupapp/blob/master/app/controllers/user_startups_controller.rb">UserStartups</a> and <a href="https://github.com/alexpatriquin/stackupapp/blob/app/controllers/startups_controller.rb">Startups</a> controllers, respectively, and can only be access as an authenticated user.</p>
 
 <h5>Backgrounds jobs with Sidekiq and Redis</h5>
 
