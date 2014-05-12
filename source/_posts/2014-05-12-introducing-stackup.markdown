@@ -8,13 +8,12 @@ categories: [Projects, Rails 4, NLP, OAuth, Redis]
 ---
 
 [{% img center ../images/post_images/crowdsurge-serp.png "StackupApp" %}](http://stackupapp.herokuapp.com/)
-## Description 
 
 [StackupApp](http://stackupapp.herokuapp.com/) is AngelList for tech stacks. The app seeks to map out the current technology landscape of the startup ecosystem. The app injests startups from the AngelList API and tags each startup with programming language and tech stack keywords from Indeed job postings. 
 
 Currently there at 5,318 New York City-based startups on StackupApp, of which 693 have been tagged.
 
-## Technical Features
+### Technical Features
 
 ##### APIs and OAuth
 
@@ -28,7 +27,7 @@ If you don't have an AngelList profile or would like to use a demo account, you 
 
 ##### RESTful Routes
 
-StackupApp is built with Rails, and takes full advantage of the framework's REST conventions. The Unclaim and Deadpool buttons intiate DELETE actions on the [UserStartups](https://github.com/alexpatriquin/stackupapp/blob/master/app/controllers/user_startups_controller.rb) and [Startups](/app/controllers/startups_controller.rb) controllers, respectively, and can only be access as an authenticated user.
+StackupApp is built with Rails, and takes full advantage of the framework's REST conventions. The Unclaim and Deadpool buttons intiate DELETE actions on the [UserStartups](https://github.com/alexpatriquin/stackupapp/blob/master/app/controllers/user_startups_controller.rb) and [Startups](https://github.com/alexpatriquin/stackupapp/blob//app/controllers/startups_controller.rb) controllers, respectively, and can only be access as an authenticated user.
 
 ##### Backgrounds jobs with Sidekiq and Redis
 
@@ -40,5 +39,5 @@ The app displays startups and technology tags by popularity scopes. Tag populari
 
 The app enables users to ```search_by_name``` for startups or ```search_by_tag``` for tecnologies, which is implemented with the ```pg_search``` gem on [the Startup model](https://github.com/alexpatriquin/stackupapp/blob/master/app/models/startup.rb). Only startups that have been tagged are shown in the index and search results, while all startups are searchable by name.
 
-## Continuing Development
+### Continuing Development
 Continuing development plans include moving the frontend into Ember.js. Also, expanding to SF and Boston.
