@@ -27,7 +27,7 @@ If you don't have an AngelList profile or would like to use a demo account, you 
 
 ##### RESTful Routes
 
-StackupApp is built with Rails, and takes full advantage of the framework's REST conventions. The Unclaim and Deadpool buttons intiate DELETE actions on the [UserStartups](https://github.com/alexpatriquin/stackupapp/blob/master/app/controllers/user_startups_controller.rb) and [Startups](https://github.com/alexpatriquin/stackupapp/blob/app/controllers/startups_controller.rb) controllers, respectively, and can only be access as an authenticated user.
+StackupApp is built with Rails, and takes full advantage of the framework's REST conventions. The Unclaim and Deadpool buttons intiate DELETE actions on the [UserStartups](https://github.com/alexpatriquin/stackupapp/blob/master/app/controllers/user_startups_controller.rb) and [Startups](https://github.com/alexpatriquin/stackupapp/blob/master/app/controllers/startups_controller.rb) controllers, respectively, and can only be access as an authenticated user.
 
 ##### Backgrounds jobs with Sidekiq and Redis
 
