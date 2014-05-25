@@ -9,7 +9,7 @@
   <meta name="author" content="Alex Patriquin">
 
   
-  <meta name="description" content="Recently, while working on a JavaScript project, I experimented with putting a closure a loop.It did not work, and for reasons I couldn’t initially &hellip;">
+  <meta name="description" content="Recently, while working on a JavaScript project, I experimented with putting a closure a loop. It did not work, and for reasons I couldn’t initially &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -110,9 +110,13 @@
   </header>
 
 
-  <div class="entry-content"><p>Recently, while working on a JavaScript project, I experimented with putting a closure a loop.It did not work, and for reasons I couldn’t initially explain.</p>
+  <div class="entry-content"><p>Recently, while working on a JavaScript project, I experimented with putting a closure a loop. It did not work, and for reasons I couldn’t initially explain.</p>
 
 <p>After some a lot of research, it turns out I had stumbled into a well-understood issue (some call it a bug) known as “fold over.” In this post, I’ll go over what “fold over” means and a few alternatives for counteracting it, including a very useful design pattern known as an Immediately Invoked Function Expression (IIFE).</p>
+
+<h3>Background: A Game of Blackjack</h3>
+
+<p>The project was to build a simple version of the game of Blackjack in JavaScript. I had set up the game such that each round could have any number of players and rounds would end with an array of each player and their card total (with face cards worth 10 points and aces worth 1 or 11).</p>
 
 </div>
   

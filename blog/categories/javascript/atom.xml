@@ -4,7 +4,7 @@
   <title><![CDATA[Category: JavaScript | SquareCraft]]></title>
   <link href="http://alexpatriquin.github.io/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://alexpatriquin.github.io/"/>
-  <updated>2014-05-24T23:30:50-04:00</updated>
+  <updated>2014-05-24T23:35:14-04:00</updated>
   <id>http://alexpatriquin.github.io/</id>
   <author>
     <name><![CDATA[Alex Patriquin]]></name>
@@ -18,21 +18,21 @@
     <link href="http://alexpatriquin.github.io/when-javascript-gets-iife"/>
     <updated>2014-05-24T15:47:29-04:00</updated>
     <id>http://alexpatriquin.github.io/when-javascript-gets-iife</id>
-    <content type="html"><![CDATA[<p>Recently, while working on a JavaScript project, I experimented with putting a closure a loop.It did not work, and for reasons I couldn’t initially explain.</p>
+    <content type="html"><![CDATA[<p>Recently, while working on a JavaScript project, I experimented with putting a closure a loop. It did not work, and for reasons I couldn’t initially explain.</p>
 
 <p>After some a lot of research, it turns out I had stumbled into a well-understood issue (some call it a bug) known as “fold over.” In this post, I’ll go over what “fold over” means and a few alternatives for counteracting it, including a very useful design pattern known as an Immediately Invoked Function Expression (IIFE).</p>
-
-<!-- more -->
-
 
 <h3>Background: A Game of Blackjack</h3>
 
 <p>The project was to build a simple version of the game of Blackjack in JavaScript. I had set up the game such that each round could have any number of players and rounds would end with an array of each player and their card total (with face cards worth 10 points and aces worth 1 or 11).</p>
 
+<!-- more -->
+
+
 <p><div class='bogus-wrapper'><notextile><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class=''><span class='line'>var round1 = [{name:&ldquo;Player1&rdquo;, cardTot:18}, {name:&ldquo;Player2&rdquo;,cardTot:21}, {name:&ldquo;Player3&rdquo;,cardTot: 24}];</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
-<p>A score function would then accept the round as an argument, as the hands parameter. Then a for loop held a closure (or function inside a function) that checked to see if cardTot was over 21 and, if not, return the player’s blackjack score for that hand. Obviously, in blackjack, if your hand goes over 21, you bust and get 0 for the round.</p>
+<p>A <code>score</code> function would then accept the round as an argument, as the <code>hands</code> parameter. Then a for loop held a closure (or function inside a function) that checked to see if <code>cardTot</code> was over 21 and, if not, return the player’s blackjack score for that hand. Obviously, in blackjack, if your hand goes over 21, you bust and get 0 for the round.</p>
 
 <p>``` javascript
 function score(hands) {</p>
@@ -51,14 +51,14 @@ return hands;
 score(round1)[0].bjScore();
 ```</p>
 
-<p>The issue arose on line XX when I tried to call bjScore(); on Player1.</p>
+<p>The issue arose on line 11 when I tried to call <code>bjScore();</code> on Player1.</p>
 
 <p><div class='bogus-wrapper'><notextile><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class=''><span class='line'>TypeError: Cannot read property &lsquo;cardTot&rsquo; of undefined</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
-<p>The error was that cardTot was getting called on hands[3], which did not exist. The zero-based hands array was only 3 players long. How did this happen?</p>
+<p>The error was that cardTot was getting called on <code>hands[3]</code>, which did not exist. The zero-based <code>hands</code> array was only 3 players long. How did this happen?</p>
 
-<p>FYI &ndash; A simpler and probably better approach would have been simply to assign bjScore for each player’s hand, instead of setting up the closure to do so later. But, as mentioned, I was just experimenting.</p>
+<p>FYI &ndash; A simpler and probably better approach would have been simply to assign <code>bjScore</code> for each player’s hand, instead of setting up the closure to do so later. But, as mentioned, I was just experimenting.</p>
 
 <h3>Understanding How Loops Can “Fold Over” Closures</h3>
 
@@ -66,9 +66,9 @@ score(round1)[0].bjScore();
 
 <p>Moreover a closure refers to its outer function’s variables even after the outer function has returned. In the context of for loops, this post-return access creates the “fold over” effect. Left at default access, closures will always call the last value of the iterator in the loop.</p>
 
-<p>For example, in the score(hands) example above, the for loop has fully executed before the bjScore(); closure ever gets called. Thus, the value of i on line XX is hands.length or 2. And when bjScore(); does get called on the next line, doing so actually increments i one more time, so that that a TypeError is raised.</p>
+<p>For example, in the <code>score(hands)</code> example above, the for loop has fully executed before the <code>bjScore();</code> closure ever gets called. Thus, the value of i on line 10 is hands.length or 2. And when <code>bjScore();</code> does get called on the next line, doing so actually increments i one more time, so that that a <code>TypeError</code> is raised.</p>
 
-<p>Even if calling bjScore(); did not increment i, the value of i at the end of the for loop would still be 2, which would prevent us from retrieving any of the actual blackjack scores for players other than Player3, who’s at the 2-index. In other words, we would get the final player’s bjScore no matter which player we called bjScore(); on.</p>
+<p>Even if calling <code>bjScore();</code> did not increment <code>i</code>, the value of <code>i</code> at the end of the for loop would still be 2, which would prevent us from retrieving any of the actual blackjack scores for players other than Player3, who’s at the 2-index. In other words, we would get the final player’s <code>bjScore</code> no matter which player we called <code>bjScore();</code> on.</p>
 
 <h3>Immediately Invoked Function Expression (IIFE) to the Rescue</h3>
 
@@ -91,12 +91,12 @@ return hands;
 score(round0)[2].bjScore;
 ```</p>
 
-<p>Here is the score(hands) function again, but now the closure as an IIFE. The closure gets wrapped in parentheses so that Javascript will evaluate it as a function expression and then that function gets immediately invoked with the current value of i. The setup is easier to see without the example code.</p>
+<p>Here is the <code>score(hands)</code> function again, but now the closure as an IIFE. The closure gets wrapped in parentheses so that Javascript will evaluate it as a function expression and then that function gets immediately invoked with the current value of i. The setup is easier to see without the example code.</p>
 
 <p><div class='bogus-wrapper'><notextile><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class=''><span class='line'>(function () { /&lt;em> code &lt;/em>/ }());</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
-<p>Note also that we don’t need to call bjScore(); as a function any longer since the IIFE created bjScore as a property on each player object. Now we can just call bjScore and get back the correct value for each player.</p>
+<p>Note also that we don’t need to call <code>bjScore();</code> as a function any longer since the IIFE created <code>bjScore</code> as a property on each player object. Now we can just call <code>bjScore</code> and get back the correct value for each player.</p>
 ]]></content>
   </entry>
   
