@@ -159,7 +159,7 @@
 </pre></td><td class='code'><pre><code class=''><span class='line'>TypeError: Cannot read property 'cardTot' of undefined</span></code></pre></td></tr></table></div></figure>
 
 
-<p>The error was that cardTot was getting called on <code>hands[3]</code>, which did not exist. The zero-based <code>hands</code> array was only 3 players long. How did this happen?</p>
+<p>The error was that <code>cardTot</code> was getting called on <code>hands[3]</code>, which did not exist. The zero-based <code>hands</code> array was only 3 players long. How did this happen?</p>
 
 <p>FYI &ndash; A simpler and probably better approach would have been simply to assign <code>bjScore</code> for each player’s hand, instead of setting up the closure to do so later. But, as mentioned, I was just experimenting.</p>
 

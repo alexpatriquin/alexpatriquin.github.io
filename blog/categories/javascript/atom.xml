@@ -4,7 +4,7 @@
   <title><![CDATA[Category: JavaScript | SquareCraft]]></title>
   <link href="http://alexpatriquin.github.io/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://alexpatriquin.github.io/"/>
-  <updated>2014-05-24T23:37:45-04:00</updated>
+  <updated>2014-05-24T23:38:50-04:00</updated>
   <id>http://alexpatriquin.github.io/</id>
   <author>
     <name><![CDATA[Alex Patriquin]]></name>
@@ -56,7 +56,7 @@ score(round1)[0].bjScore();
 <p><div class='bogus-wrapper'><notextile><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class=''><span class='line'>TypeError: Cannot read property &lsquo;cardTot&rsquo; of undefined</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
-<p>The error was that cardTot was getting called on <code>hands[3]</code>, which did not exist. The zero-based <code>hands</code> array was only 3 players long. How did this happen?</p>
+<p>The error was that <code>cardTot</code> was getting called on <code>hands[3]</code>, which did not exist. The zero-based <code>hands</code> array was only 3 players long. How did this happen?</p>
 
 <p>FYI &ndash; A simpler and probably better approach would have been simply to assign <code>bjScore</code> for each player’s hand, instead of setting up the closure to do so later. But, as mentioned, I was just experimenting.</p>
 
