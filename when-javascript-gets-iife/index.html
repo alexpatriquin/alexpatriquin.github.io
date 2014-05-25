@@ -1,0 +1,345 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>When JavaScript gets IIFE - SquareCraft</title>
+  <meta name="author" content="Alex Patriquin">
+
+  
+  <meta name="description" content="Recently, while working on a JavaScript project, I experimented with putting a closure a loop.It did not work, and for reasons I couldn’t initially &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://alexpatriquin.github.io/when-javascript-gets-iife">
+  <link href="/images/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <script src="/javascripts/open-in-blank.js" type="text/javascript"></script>
+  <script src="/javascripts/twitter-follow-btn.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="SquareCraft" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-41617050-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:alexpatriquin.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+    <li><a href="/">
+        <span class="blue_light">
+            SquareCraft
+        </span>
+       
+           <span class="blue_dark">
+             Web development + product marketing
+           </span>
+       
+    </a></li>
+  <!-- <li><a href="/">Blog</a></li> -->
+  <!-- <li><a href="/blog/archives">Archives</a></li> -->
+  <li><a href="/about">About</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">When JavaScript Gets IIFE</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-05-24T15:47:29-04:00" pubdate data-updated="true">May 24<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Recently, while working on a JavaScript project, I experimented with putting a closure a loop.It did not work, and for reasons I couldn’t initially explain.</p>
+
+<p>After some a lot of research, it turns out I had stumbled into a well-understood issue (some call it a bug) known as “fold over.” In this post, I’ll go over what “fold over” means and a few alternatives for counteracting it, including a very useful design pattern known as an Immediately Invoked Function Expression (IIFE).</p>
+
+<!-- more -->
+
+
+<h3>Background: A Game of Blackjack</h3>
+
+<p>The project was to build a simple version of the game of Blackjack in JavaScript. I had set up the game such that each round could have any number of players and rounds would end with an array of each player and their card total (with face cards worth 10 points and aces worth 1 or 11).</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>var round1 = [{name:"Player1", cardTot:18}, {name:"Player2",cardTot:21}, {name:"Player3",cardTot: 24}];</span></code></pre></td></tr></table></div></figure>
+
+
+<p>A score function would then accept the round as an argument, as the hands parameter. Then a for loop held a closure (or function inside a function) that checked to see if cardTot was over 21 and, if not, return the player’s blackjack score for that hand. Obviously, in blackjack, if your hand goes over 21, you bust and get 0 for the round.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">score</span><span class="p">(</span><span class="nx">hands</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">hands</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">hands</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">bjScore</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="nx">hands</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">cardTot</span> <span class="o">&gt;</span> <span class="mi">21</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>            <span class="p">}</span> <span class="k">else</span> <span class="k">return</span> <span class="nx">hands</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">cardTot</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">hands</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nx">score</span><span class="p">(</span><span class="nx">round1</span><span class="p">)[</span><span class="mi">0</span><span class="p">].</span><span class="nx">bjScore</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>The issue arose on line XX when I tried to call bjScore(); on Player1.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>TypeError: Cannot read property 'cardTot' of undefined</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The error was that cardTot was getting called on hands[3], which did not exist. The zero-based hands array was only 3 players long. How did this happen?</p>
+
+<p>FYI &ndash; A simpler and probably better approach would have been simply to assign bjScore for each player’s hand, instead of setting up the closure to do so later. But, as mentioned, I was just experimenting.</p>
+
+<h3>Understanding How Loops Can “Fold Over” Closures</h3>
+
+<p>A closure has access to the variables defined within its own scope, as well as the variables and even parameters of its outer function(s). However, a closure does not store the actual values of its outer functions. A closure only stores references to them.</p>
+
+<p>Moreover a closure refers to its outer function’s variables even after the outer function has returned. In the context of for loops, this post-return access creates the “fold over” effect. Left at default access, closures will always call the last value of the iterator in the loop.</p>
+
+<p>For example, in the score(hands) example above, the for loop has fully executed before the bjScore(); closure ever gets called. Thus, the value of i on line XX is hands.length or 2. And when bjScore(); does get called on the next line, doing so actually increments i one more time, so that that a TypeError is raised.</p>
+
+<p>Even if calling bjScore(); did not increment i, the value of i at the end of the for loop would still be 2, which would prevent us from retrieving any of the actual blackjack scores for players other than Player3, who’s at the 2-index. In other words, we would get the final player’s bjScore no matter which player we called bjScore(); on.</p>
+
+<h3>Immediately Invoked Function Expression (IIFE) to the Rescue</h3>
+
+<p>One way to counteract “fold over” in loops is to use an <a href="http://benalman.com/news/2010/11/immediately-invoked-function-expression/">IIFE</a>, which is a design pattern that saves the state of a variable value so that it can be passed into a closure. Usually a closure would have to accept post-return access to a loop’s final value, but with IIFE, we can “lock in” and pass the value into the closure at each turn of the loop.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">score</span><span class="p">(</span><span class="nx">hands</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">hands</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">hands</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">bjScore</span> <span class="o">=</span> <span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="nx">hands</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">cardTot</span> <span class="o">&gt;</span> <span class="mi">21</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>            <span class="p">}</span> <span class="k">else</span> <span class="k">return</span> <span class="nx">hands</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">cardTot</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">})();</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">hands</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nx">score</span><span class="p">(</span><span class="nx">round0</span><span class="p">)[</span><span class="mi">2</span><span class="p">].</span><span class="nx">bjScore</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>Here is the score(hands) function again, but now the closure as an IIFE. The closure gets wrapped in parentheses so that Javascript will evaluate it as a function expression and then that function gets immediately invoked with the current value of i. The setup is easier to see without the example code.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>(function () { /* code */ }());</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Note also that we don’t need to call bjScore(); as a function any longer since the IIFE created bjScore as a property on each player object. Now we can just call bjScore and get back the correct value for each player.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Alex Patriquin</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-05-24T15:47:29-04:00" pubdate data-updated="true">May 24<span>th</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/javascript/'>JavaScript</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/stackup-angellist-for-tech-stacks" title="Previous Post: Introducing Stackup">&laquo; Introducing Stackup</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  
+</section>
+<section>
+  <h1>About Me</h1>
+  <div style="margin-top:15px"><a href="/about"><img src="/images/alex-patriquin.jpg" height="75" width="75" alt="Alex Patriquin" class="left"></a></div>
+  <a href="/about">Alex Patriquin</a>
+  <p>Web developer +<br>product marketer,<br>based in San Francisco.</p>
+  <a href="https://github.com/alexpatriquin"><i class="fa fa-github-square fa-2x"></i></a>
+  <a href="https://www.linkedin.com/in/alexpatriquin"><i class="fa fa-linkedin-square fa-2x"></i></a>
+  <a href="https://twitter.com/apatriq"><i class="fa fa-twitter-square fa-2x"></i></a>
+  <a href="https://www.facebook.com/patriquin"><i class="fa fa-facebook-square fa-2x"></i></a>
+  <a href="https://plus.google.com/+AlexPatriquin/posts"><i class="fa fa-google-plus-square fa-2x"></i></a>
+  <a href="mailto:alexpatriquin@gmail.com"><i class="fa fa-envelope fa-2x"></i></a>
+  <br><br>
+  <a href="https://twitter.com/apatriq" class="twitter-follow-button" data-show-count="true">Follow @apatriq</a>
+  <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+</section>
+<section>
+  <h1>Current Projects</h1>
+  <ul>
+    <li><a href="http://stackupapp.herokuapp.com/">Stackup</a></li>
+    <li><a href="/how-i-built-poemtoday">PoemToday</a></li>
+    <li><a href="/introducing-tender">TenderMessenger</a></li>
+  </ul>
+</section>
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/when-javascript-gets-iife">When JavaScript gets IIFE</a>
+      </li>
+    
+      <li class="post">
+        <a href="/stackup-angellist-for-tech-stacks">Introducing Stackup</a>
+      </li>
+    
+      <li class="post">
+        <a href="/twilio-text-to-speech-in-rails-4">Twilio Text-To-Speech in Rails 4</a>
+      </li>
+    
+      <li class="post">
+        <a href="/text-to-speech-options-for-web-apps">Text-To-Speech Options for Web Apps</a>
+      </li>
+    
+      <li class="post">
+        <a href="/how-i-built-poemtoday">How I Built PoemToday</a>
+      </li>
+    
+  </ul>
+</section>
+<h4><a href="/blog/archives">Archives</a></h4>
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Alex Patriquin -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
